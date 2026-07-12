@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   View,
   ScrollView,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import { useAppSelector } from '../../store/hooks';
 import { DrinkLog } from '../../store/slices/hydrationSlice';
@@ -17,6 +18,10 @@ export default function HistoryScreen() {
   const logs = useAppSelector((state) => state.hydration.logs);
   const streak = useAppSelector((state) => state.hydration.streak);
   const dailyGoal = useAppSelector((state) => state.settings.dailyGoal);
+
+  // Set default selected bar to today (0 to 6)
+  const currentDayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+  const [selectedBarIdx, setSelectedBarIdx] = useState<number>(currentDayIndex);
 
   // Helper: Find Monday of current week
   const getWeeklyData = (logs: DrinkLog[], dailyGoal: number) => {
@@ -130,22 +135,54 @@ export default function HistoryScreen() {
 
           {/* Bar Chart Grid */}
           <View className="flex-row items-end justify-between h-48 gap-3 px-1">
-            {weeklyData.map((dayData, idx) => (
-              <View key={idx} className="flex-1 flex-col items-center gap-2 h-full justify-end">
-                {/* Bar outline */}
-                <View className="w-full bg-[#eceef0] rounded-t-full relative overflow-hidden h-[80%] flex-col justify-end">
-                  {/* Liquid fill representing percentage */}
+            {weeklyData.map((dayData, idx) => {
+              const isSelected = selectedBarIdx === idx;
+              return (
+                <TouchableOpacity 
+                  key={idx} 
+                  onPress={() => setSelectedBarIdx(idx)}
+                  activeOpacity={0.85}
+                  className="flex-1 flex-col items-center gap-2 h-full justify-end"
+                >
+                  {/* Bar outline */}
                   <View 
-                    style={{ height: `${dayData.isFuture ? 0 : dayData.percent}%` }}
-                    className="w-full bg-[#006875] rounded-t-full absolute bottom-0"
-                  />
-                </View>
-                <Text className="text-[9px] font-bold text-[#8a9cae] uppercase">
-                  {dayData.day}
+                    className={`w-full rounded-t-full relative overflow-hidden h-[80%] flex-col justify-end border ${
+                      isSelected ? 'border-[#006875] bg-[#00e5ff]/5' : 'border-transparent bg-[#eceef0]'
+                    }`}
+                  >
+                    {/* Liquid fill representing percentage */}
+                    <View 
+                      style={{ height: `${dayData.isFuture ? 0 : dayData.percent}%` }}
+                      className="w-full bg-[#006875] rounded-t-full absolute bottom-0"
+                    />
+                  </View>
+                  <Text className={`text-[9px] font-bold uppercase ${
+                    isSelected ? 'text-[#006875] scale-110' : 'text-[#8a9cae]'
+                  }`}>
+                    {dayData.day}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Selected Day Details Panel */}
+          {selectedBarIdx !== null && (
+            <View className="mt-5 bg-[#F7F9FB] border border-[#eceef0] p-3 rounded-2xl flex-row justify-between items-center">
+              <View>
+                <Text className="text-[9px] font-bold text-[#8a9cae] uppercase tracking-wider">SELECTED DAY</Text>
+                <Text className="text-xs font-bold text-[#001f24] mt-0.5">{weeklyData[selectedBarIdx].dateStr}</Text>
+              </View>
+              <View className="items-end">
+                <Text className="text-xs font-extrabold text-[#006875]">
+                  {weeklyData[selectedBarIdx].total}ml / {dailyGoal}ml
+                </Text>
+                <Text className="text-[9px] font-bold uppercase tracking-wider text-[#3b494c] mt-0.5">
+                  {weeklyData[selectedBarIdx].total >= dailyGoal ? 'Goal Met 🎉' : 'Missed 💧'}
                 </Text>
               </View>
-            ))}
-          </View>
+            </View>
+          )}
         </View>
 
         {/* Bento Insights Cards Row */}
