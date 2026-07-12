@@ -49,6 +49,7 @@ export default function LogScreen() {
 
   // Add water to Redux state
   const handleAddWater = () => {
+    console.log('LOG SCREEN: Dispatching addDrink with amount =', selectedAmount);
     dispatch(addDrink({ amount: selectedAmount, containerType: selectedContainer }));
   };
 
@@ -254,20 +255,16 @@ export default function LogScreen() {
       </ScrollView>
 
       {/* Floating Bottom Logging Button */}
-      <View 
-        style={{ bottom: insets.bottom + 80 }} 
-        className="absolute left-5 right-5 px-1 justify-center items-center pointer-events-none"
+      <TouchableOpacity 
+        onPress={handleAddWater}
+        style={{ bottom: insets.bottom + 80, alignSelf: 'center' }}
+        className="absolute left-5 right-5 max-w-md h-14 rounded-full bg-[#006875] flex-row items-center justify-center gap-2 active:scale-95 shadow-lg shadow-cyan-900/20"
       >
-        <TouchableOpacity 
-          onPress={handleAddWater}
-          className="bg-[#006875] w-full max-w-md h-14 rounded-full flex-row items-center justify-center gap-2 active:scale-95 shadow-lg shadow-cyan-900/20 pointer-events-auto"
-        >
-          <Ionicons name="add" size={20} color="white" />
-          <Text className="text-base font-bold text-white uppercase tracking-wider">
-            Add {selectedAmount}ml Water
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <Ionicons name="add" size={20} color="white" />
+        <Text className="text-base font-bold text-white uppercase tracking-wider">
+          Add {selectedAmount}ml Water
+        </Text>
+      </TouchableOpacity>
 
       {/* Custom Amount Modal */}
       <Modal
