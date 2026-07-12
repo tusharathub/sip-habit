@@ -1,26 +1,129 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-  ImageBackground,
   Animated,
   Easing,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  StatusBar,
   Switch,
-  TextInput,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 
 interface Reminder {
   id: string;
   time: string;
   enabled: boolean;
+}
+
+// Reusable Snapping Scroll Picker (Mimics iOS Native Wheel Picker with Infinite Loop)
+interface ScrollPickerProps {
+  items: string[];
+  selectedValue: string;
+  onValueChange: (value: string) => void;
+  width?: number;
+}
+
+function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: ScrollPickerProps) {
+  const scrollViewRef = useRef<ScrollView>(null);
+  const itemHeight = 40;
+  const containerHeight = 120;
+  
+  // Repeat items 3 times to support infinite scroll illusion
+  const repeatedItems = [...items, ...items, ...items];
+  const paddedItems = ['', ...repeatedItems, ''];
+  const midIndexOffset = items.length; // Offset to middle copy
+  
+  // Flag to prevent double scrolling triggers
+  const isJumping = useRef(false);
+
+  useEffect(() => {
+    if (isJumping.current) return;
+    const selectedIndex = items.indexOf(selectedValue);
+    if (selectedIndex !== -1 && scrollViewRef.current) {
+      const targetIndex = selectedIndex + midIndexOffset;
+      const timer = setTimeout(() => {
+        scrollViewRef.current?.scrollTo({
+          y: targetIndex * itemHeight,
+          animated: false,
+        });
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedValue, items]);
+
+  const handleScroll = (event: any) => {
+    if (isJumping.current) return;
+    const yOffset = event.nativeEvent.contentOffset.y;
+    const index = Math.round(yOffset / itemHeight);
+    
+    if (index >= 0 && index < repeatedItems.length) {
+      const originalIndex = index % items.length;
+      const newValue = items[originalIndex];
+      
+      if (newValue !== selectedValue) {
+        onValueChange(newValue);
+      }
+
+      // Silent Jump Trick: Snap back to the middle segment when approaching margins
+      const lowerBound = items.length;
+      const upperBound = items.length * 2;
+      
+      if (index < lowerBound || index >= upperBound) {
+        isJumping.current = true;
+        const targetIndex = originalIndex + midIndexOffset;
+        
+        // Jump without animation so it is completely invisible to the user
+        scrollViewRef.current?.scrollTo({
+          y: targetIndex * itemHeight,
+          animated: false,
+        });
+        
+        // Reset flag after a tiny delay
+        setTimeout(() => {
+          isJumping.current = false;
+        }, 50);
+      }
+    }
+  };
+
+  return (
+    <View style={{ height: containerHeight, width }} className="relative justify-center overflow-hidden">
+      <ScrollView
+        ref={scrollViewRef}
+        showsVerticalScrollIndicator={false}
+        snapToInterval={itemHeight}
+        decelerationRate="fast"
+        onMomentumScrollEnd={handleScroll}
+        contentContainerStyle={{ paddingVertical: 0 }}
+      >
+        {paddedItems.map((item, idx) => (
+          <View 
+            key={idx} 
+            style={{ height: itemHeight }} 
+            className="justify-center items-center"
+          >
+            <Text 
+              className={`text-2xl font-bold tracking-wider ${
+                item === selectedValue ? 'text-[#001f24] scale-110' : 'text-[#8a9cae]/60'
+              }`}
+            >
+              {item}
+            </Text>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
 }
 
 export default function DashboardScreen() {
@@ -35,21 +138,25 @@ export default function DashboardScreen() {
 
   // Reminders Local State
   const [reminders, setReminders] = useState<Reminder[]>([
-    { id: '1', time: '08:00 AM', enabled: true },
-    { id: '2', time: '12:00 PM', enabled: true },
-    { id: '3', time: '03:30 PM', enabled: false },
-    { id: '4', time: '07:00 PM', enabled: true },
+    { id: '1', time: '08:00', enabled: true },
+    { id: '2', time: '12:00', enabled: true },
   ]);
-  const [newReminderTime, setNewReminderTime] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
+  
+  // Time Picker Modal States
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedHour, setSelectedHour] = useState('08');
+  const [selectedMinute, setSelectedMinute] = useState('00');
 
   // Wave animation controllers
   const wave1Anim = useRef(new Animated.Value(0)).current;
   const wave2Anim = useRef(new Animated.Value(0)).current;
 
+  // Set up values arrays for picker (24-hour format)
+  const hoursList = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+  const minutesList = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
+
   // Initialize infinite wave animations on mount
   useEffect(() => {
-    // Wave 1: 8 seconds rotation loop
     Animated.loop(
       Animated.timing(wave1Anim, {
         toValue: 1,
@@ -59,7 +166,6 @@ export default function DashboardScreen() {
       })
     ).start();
 
-    // Wave 2: 12 seconds rotation loop
     Animated.loop(
       Animated.timing(wave2Anim, {
         toValue: 1,
@@ -70,7 +176,7 @@ export default function DashboardScreen() {
     ).start();
   }, [wave1Anim, wave2Anim]);
 
-  // Sync today's intake on mount (in case day shifted)
+  // Sync today's intake on mount
   useEffect(() => {
     dispatch(syncTodayIntake());
   }, [dispatch]);
@@ -80,35 +186,31 @@ export default function DashboardScreen() {
     dispatch(updateStreak({ dailyGoal }));
   }, [todayIntake, dailyGoal, dispatch]);
 
-  // Calculate percentage (capped at 100)
   const percentage = Math.min(100, Math.round((todayIntake / dailyGoal) * 100)) || 0;
   const remaining = Math.max(0, dailyGoal - todayIntake);
 
-  // Toggle reminder enabled status
+  // Toggle reminder
   const toggleReminder = (id: string) => {
     setReminders(prev =>
       prev.map(r => (r.id === id ? { ...r, enabled: !r.enabled } : r))
     );
   };
 
-  // Add a new reminder
-  const addReminder = () => {
-    if (!newReminderTime.trim()) return;
+  // Add reminder from selected state
+  const handleAddReminder = () => {
+    const timeStr = `${selectedHour}:${selectedMinute}`;
     const newId = Math.random().toString(36).substring(2, 9);
     setReminders(prev => [
       ...prev,
-      { id: newId, time: newReminderTime, enabled: true },
+      { id: newId, time: timeStr, enabled: true },
     ]);
-    setNewReminderTime('');
-    setShowAddForm(false);
+    setShowTimePicker(false);
   };
 
-  // Delete a reminder
   const deleteReminder = (id: string) => {
     setReminders(prev => prev.filter(r => r.id !== id));
   };
 
-  // Map animated values to rotations
   const rotate1 = wave1Anim.interpolate({
     inputRange: [0, 1],
     outputRange: ['-28deg', '332deg'],
@@ -120,8 +222,9 @@ export default function DashboardScreen() {
   });
 
   return (
-    <View 
-      className="flex-1 bg-[#F7F9FB]" 
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      className="flex-1 bg-[#F7F9FB]"
       style={{ paddingTop: insets.top }}
     >
       <StatusBar barStyle="dark-content" />
@@ -146,7 +249,6 @@ export default function DashboardScreen() {
         <View className="items-center my-4">
           <View className="w-72 h-72 rounded-full border border-white/50 bg-[#e6e8ea]/20 relative items-center justify-center overflow-hidden shadow-xl shadow-cyan-500/10">
             
-            {/* Animated background wave layer */}
             <Animated.View 
               style={{
                 height: `${percentage}%`,
@@ -159,7 +261,6 @@ export default function DashboardScreen() {
               }}
             />
             
-            {/* Animated primary diagonal wave fill layer */}
             <Animated.View 
               style={{
                 height: `${percentage}%`,
@@ -168,11 +269,10 @@ export default function DashboardScreen() {
                 bottom: 0,
                 left: '-30%',
                 transform: [{ rotate: rotate1 }],
-                backgroundColor: '#3a9fa9', // beautiful solid teal wave fill
+                backgroundColor: '#3a9fa9',
               }}
             />
 
-            {/* Central Overlay Content */}
             <View className="z-10 items-center justify-center bg-white/75 w-[84%] h-[84%] rounded-full border border-white/90 shadow-md">
               <Text className="text-[10px] font-bold text-[#00626e] tracking-wider uppercase mb-1">
                 CURRENTLY AT
@@ -186,7 +286,6 @@ export default function DashboardScreen() {
             </View>
           </View>
 
-          {/* Motivation Text */}
           <View className="mt-6 items-center px-4">
             <Text className="text-xl font-bold text-[#191c1e] mb-1">
               {percentage >= 100 ? 'Goal Achieved! 🎉' : 'Stay Refreshed!'}
@@ -207,7 +306,7 @@ export default function DashboardScreen() {
           </View>
         </View>
 
-        {/* Navigation Call-To-Action (Replaces Quick Add) */}
+        {/* Navigation Call-To-Action */}
         <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
           <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-2">
             TRACK INTAKE
@@ -217,9 +316,9 @@ export default function DashboardScreen() {
           </Text>
           <TouchableOpacity 
             onPress={() => router.push('/log')}
-            className="bg-[#006875] flex-row items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-95 shadow-sm shadow-cyan-900/10"
+            className="bg-[#006875] flex-row items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-95 shadow-sm"
           >
-            <Ionicons name="add" size={20} color="#white" style={{ marginRight: 2 }} />
+            <Ionicons name="add" size={20} color="white" />
             <Text className="text-sm font-bold text-white uppercase tracking-wider">Log Intake Screen</Text>
           </TouchableOpacity>
         </View>
@@ -231,31 +330,12 @@ export default function DashboardScreen() {
               DAILY REMINDERS
             </Text>
             <TouchableOpacity 
-              onPress={() => setShowAddForm(!showAddForm)}
+              onPress={() => setShowTimePicker(true)}
               className="w-7 h-7 rounded-full bg-[#006875]/10 items-center justify-center active:scale-95"
             >
-              <Ionicons name={showAddForm ? 'close' : 'add'} size={18} color="#006875" />
+              <Ionicons name="add" size={18} color="#006875" />
             </TouchableOpacity>
           </View>
-
-          {/* Add Reminder Form */}
-          {showAddForm && (
-            <View className="flex-row gap-2 mb-4 bg-[#eceef0]/30 p-3 rounded-2xl border border-[#eceef0]">
-              <TextInput
-                value={newReminderTime}
-                onChangeText={setNewReminderTime}
-                placeholder="e.g. 09:15 PM"
-                placeholderTextColor="#8a9cae"
-                className="flex-1 text-sm text-[#191c1e] font-semibold py-1 px-2 bg-white rounded-lg border border-black/5"
-              />
-              <TouchableOpacity 
-                onPress={addReminder}
-                className="bg-[#006875] px-4 py-2 rounded-lg items-center justify-center"
-              >
-                <Text className="text-xs font-bold text-white uppercase">Add</Text>
-              </TouchableOpacity>
-            </View>
-          )}
 
           {/* Reminders List */}
           <View className="space-y-3">
@@ -306,10 +386,7 @@ export default function DashboardScreen() {
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8IQasSEfxUZM8fElXgFTQr39jl9jNf2c1hSDSc93mGwr1owkSVmkUj2sHZywcVGBIe4cQ7nuHR0wa2dex0W8GnHiXVfFdo1epAoDchPP4ZRFx6QdDEfdKtPUpwcDSzihFHZF6QHZDTac0b-OlEJ8JUqtgKTGZJsRspT11t858pX4YAww43kMbI88nlW-XJpZoVKKSVj5_1Pv-32TMYFW0NZLi7FkWwfk0kS8VZlPdqm6Vj1j5lkICzZEpddnpQwQ2fuj_SUpjj2c' }}
             className="w-full h-full justify-end"
           >
-            {/* Overlay */}
             <View className="absolute inset-0 bg-black/45" />
-            
-            {/* Content */}
             <View className="p-5 z-10">
               <Text className="text-[10px] font-bold text-white/70 tracking-wider uppercase mb-1">DAILY TIP</Text>
               <Text className="text-sm font-semibold text-white leading-snug">
@@ -319,6 +396,71 @@ export default function DashboardScreen() {
           </ImageBackground>
         </View>
       </ScrollView>
-    </View>
+
+      {/* Custom Snapping Wheel Time Picker Modal (iOS Style) */}
+      <Modal
+        visible={showTimePicker}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowTimePicker(false)}
+      >
+        <View className="flex-1 bg-black/50 justify-center items-center px-6">
+          <View className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] shadow-2xl items-center">
+            
+            <Text className="text-base font-bold text-[#006875] tracking-wide mb-6">
+              ADD DAILY REMINDER
+            </Text>
+
+            {/* iOS-Style Snapping Wheel Area */}
+            <View className="flex-row items-center justify-center bg-gray-50 border border-gray-100 rounded-2xl w-full h-[120px] mb-8 relative">
+              
+              {/* Highlight center bar indicator overlay */}
+              <View 
+                style={{ height: 40, top: 40 }}
+                className="absolute left-4 right-4 border-y border-[#006875]/25 pointer-events-none"
+              />
+
+              {/* Scrollable Hours Wheel */}
+              <ScrollPicker 
+                items={hoursList} 
+                selectedValue={selectedHour} 
+                onValueChange={setSelectedHour} 
+                width={80}
+              />
+
+              <Text className="text-2xl font-bold text-[#001f24] mx-4 -mt-1">:</Text>
+
+              {/* Scrollable Minutes Wheel */}
+              <ScrollPicker 
+                items={minutesList} 
+                selectedValue={selectedMinute} 
+                onValueChange={setSelectedMinute} 
+                width={80}
+              />
+
+            </View>
+
+            {/* Actions Buttons */}
+            <View className="flex-row gap-3 w-full">
+              <TouchableOpacity 
+                onPress={() => setShowTimePicker(false)}
+                className="flex-1 py-3 bg-[#eceef0] rounded-xl items-center"
+              >
+                <Text className="text-xs font-bold text-[#3b494c]">CANCEL</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                onPress={handleAddReminder}
+                className="flex-1 py-3 bg-[#006875] rounded-xl items-center animate-pulse"
+              >
+                <Text className="text-xs font-bold text-white">SAVE TIME</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </View>
+      </Modal>
+
+    </KeyboardAvoidingView>
   );
 }
