@@ -1,24 +1,74 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Text,
   View,
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  ImageBackground,
+  Animated,
+  Easing,
+  Switch,
+  TextInput,
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addDrink, syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
+import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+
+interface Reminder {
+  id: string;
+  time: string;
+  enabled: boolean;
+}
 
 export default function DashboardScreen() {
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   
   // Fetch data from Redux
   const todayIntake = useAppSelector((state) => state.hydration.todayIntake);
   const dailyGoal = useAppSelector((state) => state.settings.dailyGoal);
   const streak = useAppSelector((state) => state.hydration.streak);
+
+  // Reminders Local State
+  const [reminders, setReminders] = useState<Reminder[]>([
+    { id: '1', time: '08:00 AM', enabled: true },
+    { id: '2', time: '12:00 PM', enabled: true },
+    { id: '3', time: '03:30 PM', enabled: false },
+    { id: '4', time: '07:00 PM', enabled: true },
+  ]);
+  const [newReminderTime, setNewReminderTime] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  // Wave animation controllers
+  const wave1Anim = useRef(new Animated.Value(0)).current;
+  const wave2Anim = useRef(new Animated.Value(0)).current;
+
+  // Initialize infinite wave animations on mount
+  useEffect(() => {
+    // Wave 1: 8 seconds rotation loop
+    Animated.loop(
+      Animated.timing(wave1Anim, {
+        toValue: 1,
+        duration: 8000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+
+    // Wave 2: 12 seconds rotation loop
+    Animated.loop(
+      Animated.timing(wave2Anim, {
+        toValue: 1,
+        duration: 12000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  }, [wave1Anim, wave2Anim]);
 
   // Sync today's intake on mount (in case day shifted)
   useEffect(() => {
@@ -34,71 +84,103 @@ export default function DashboardScreen() {
   const percentage = Math.min(100, Math.round((todayIntake / dailyGoal) * 100)) || 0;
   const remaining = Math.max(0, dailyGoal - todayIntake);
 
-  // Handle Quick Add click
-  const handleQuickAdd = (amount: number, type: 'cup' | 'bottle' | 'large') => {
-    dispatch(addDrink({ amount, containerType: type }));
+  // Toggle reminder enabled status
+  const toggleReminder = (id: string) => {
+    setReminders(prev =>
+      prev.map(r => (r.id === id ? { ...r, enabled: !r.enabled } : r))
+    );
   };
+
+  // Add a new reminder
+  const addReminder = () => {
+    if (!newReminderTime.trim()) return;
+    const newId = Math.random().toString(36).substring(2, 9);
+    setReminders(prev => [
+      ...prev,
+      { id: newId, time: newReminderTime, enabled: true },
+    ]);
+    setNewReminderTime('');
+    setShowAddForm(false);
+  };
+
+  // Delete a reminder
+  const deleteReminder = (id: string) => {
+    setReminders(prev => prev.filter(r => r.id !== id));
+  };
+
+  // Map animated values to rotations
+  const rotate1 = wave1Anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['-28deg', '332deg'],
+  });
+
+  const rotate2 = wave2Anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['-18deg', '342deg'],
+  });
 
   return (
     <View 
-      className="flex-1 bg-[#091522]" 
+      className="flex-1 bg-[#F7F9FB]" 
       style={{ paddingTop: insets.top }}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       
       {/* Top Header */}
-      <View className="flex-row items-center justify-between px-6 py-4 border-b border-[#12253A]">
+      <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
         <View className="flex-row items-center gap-2">
-          <Ionicons name="water" size={24} color="#00BDFF" />
-          <Text className="text-xl font-bold text-[#00BDFF] tracking-tight">H2O Vitality</Text>
+          <Ionicons name="water" size={24} color="#006875" />
+          <Text className="text-xl font-bold text-[#006875] tracking-tight">H2O Vitality</Text>
         </View>
-        <TouchableOpacity className="w-10 h-10 rounded-full items-center justify-center bg-[#12253A] active:scale-95">
-          <Ionicons name="notifications" size={20} color="#8A9CAE" />
+        <TouchableOpacity className="w-10 h-10 rounded-full items-center justify-center bg-[#eceef0] active:scale-95">
+          <Ionicons name="notifications" size={20} color="#3b494c" />
         </TouchableOpacity>
       </View>
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
-        className="px-6 pt-6"
+        className="px-5 pt-6"
       >
         {/* Visual Tracker Circle */}
-        <View className="items-center my-6">
-          <View className="w-72 h-72 md:w-80 md:h-80 rounded-full border border-white/10 bg-white/5 relative items-center justify-center overflow-hidden shadow-2xl">
+        <View className="items-center my-4">
+          <View className="w-72 h-72 rounded-full border border-white/50 bg-[#e6e8ea]/20 relative items-center justify-center overflow-hidden shadow-xl shadow-cyan-500/10">
             
-            {/* Water Fill Layer */}
-            <View 
+            {/* Animated background wave layer */}
+            <Animated.View 
               style={{
                 height: `${percentage}%`,
+                width: '160%',
                 position: 'absolute',
                 bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: 'rgba(0, 189, 255, 0.45)',
+                left: '-30%',
+                transform: [{ rotate: rotate2 }],
+                backgroundColor: 'rgba(0, 229, 255, 0.25)',
               }}
             />
             
-            {/* Second overlay layer for visual depth */}
-            <View 
+            {/* Animated primary diagonal wave fill layer */}
+            <Animated.View 
               style={{
-                height: `${Math.max(0, percentage - 5)}%`,
+                height: `${percentage}%`,
+                width: '160%',
                 position: 'absolute',
                 bottom: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: 'rgba(156, 240, 255, 0.15)',
+                left: '-30%',
+                transform: [{ rotate: rotate1 }],
+                backgroundColor: '#3a9fa9', // beautiful solid teal wave fill
               }}
             />
 
             {/* Central Overlay Content */}
-            <View className="z-10 items-center justify-center bg-black/10 w-[85%] h-[85%] rounded-full border border-white/5 shadow-inner">
-              <Text className="text-xs font-semibold text-[#8A9CAE] tracking-wider uppercase mb-1">
+            <View className="z-10 items-center justify-center bg-white/75 w-[84%] h-[84%] rounded-full border border-white/90 shadow-md">
+              <Text className="text-[10px] font-bold text-[#00626e] tracking-wider uppercase mb-1">
                 CURRENTLY AT
               </Text>
-              <Text className="text-5xl font-bold text-white tracking-tight">
+              <Text className="text-5xl font-extrabold text-[#001f24] tracking-tight">
                 {percentage}%
               </Text>
-              <Text className="text-sm text-[#8A9CAE] mt-1 font-medium">
+              <Text className="text-xs text-[#00626e]/80 mt-1 font-semibold">
                 {todayIntake} / {dailyGoal}ml
               </Text>
             </View>
@@ -106,18 +188,18 @@ export default function DashboardScreen() {
 
           {/* Motivation Text */}
           <View className="mt-6 items-center px-4">
-            <Text className="text-xl font-bold text-white mb-1">
+            <Text className="text-xl font-bold text-[#191c1e] mb-1">
               {percentage >= 100 ? 'Goal Achieved! 🎉' : 'Stay Refreshed!'}
             </Text>
-            <Text className="text-sm text-[#8A9CAE] text-center max-w-[280px]">
+            <Text className="text-sm text-[#3b494c] text-center max-w-[280px]">
               {percentage >= 100 
                 ? `Outstanding! You met your goal of ${dailyGoal}ml today.` 
-                : `You're doing great! Just ${remaining}ml left to reach your goal.`}
+                : `You're doing great. Just ${remaining}ml left to reach your daily goal.`}
             </Text>
             {streak > 0 && (
-              <View className="flex-row items-center gap-1 mt-2 bg-[#12253A]/50 px-3 py-1 rounded-full border border-[#00BDFF]/10">
-                <Ionicons name="flame" size={14} color="#FF9500" />
-                <Text className="text-xs font-semibold text-[#FF9500]">
+              <View className="flex-row items-center gap-1 mt-2 bg-[#d5e3ff] px-3 py-1 rounded-full border border-[#006875]/10">
+                <Ionicons name="flame" size={14} color="#006875" />
+                <Text className="text-xs font-bold text-[#006875]">
                   {streak} DAY STREAK
                 </Text>
               </View>
@@ -125,63 +207,116 @@ export default function DashboardScreen() {
           </View>
         </View>
 
-        {/* Quick Add Bento Card */}
-        <View className="bg-[#12253A]/40 border border-[#162D44] rounded-3xl p-5 mb-6">
-          <Text className="text-xs font-bold text-[#00BDFF] tracking-widest uppercase mb-4">
-            QUICK ADD
+        {/* Navigation Call-To-Action (Replaces Quick Add) */}
+        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+          <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-2">
+            TRACK INTAKE
           </Text>
-          <View className="flex-row gap-3">
-            <TouchableOpacity 
-              onPress={() => handleQuickAdd(250, 'cup')}
-              className="flex-1 flex-col items-center justify-center gap-2 py-4 rounded-2xl bg-[#00BDFF]/10 border border-[#00BDFF]/20 active:scale-95"
-            >
-              <Ionicons name="wine" size={24} color="#00BDFF" />
-              <Text className="text-xs font-bold text-[#00BDFF]">250ML</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              onPress={() => handleQuickAdd(500, 'bottle')}
-              className="flex-1 flex-col items-center justify-center gap-2 py-4 rounded-2xl bg-[#00BDFF]/20 border border-[#00BDFF]/30 active:scale-95"
-            >
-              <Ionicons name="water" size={24} color="#00BDFF" />
-              <Text className="text-xs font-bold text-[#00BDFF]">500ML</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              onPress={() => handleQuickAdd(750, 'large')}
-              className="flex-1 flex-col items-center justify-center gap-2 py-4 rounded-2xl bg-[#9CF0FF]/15 border border-[#9CF0FF]/25 active:scale-95"
-            >
-              <Ionicons name="beer" size={24} color="#00BDFF" />
-              <Text className="text-xs font-bold text-[#00BDFF]">750ML</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Reminder Card */}
-        <View className="bg-[#00BDFF]/5 border border-[#00BDFF]/15 rounded-3xl p-5 flex-row items-center justify-between mb-6">
-          <View className="flex-row items-center gap-4">
-            <View className="w-12 h-12 rounded-2xl bg-[#00BDFF]/10 items-center justify-center">
-              <Ionicons name="alarm" size={24} color="#00BDFF" />
-            </View>
-            <View>
-              <Text className="text-base font-bold text-white">Next Reminder</Text>
-              <Text className="text-xs text-[#8A9CAE] mt-0.5">In 30 minutes (2:45 PM)</Text>
-            </View>
-          </View>
-          <TouchableOpacity className="border border-[#00BDFF] px-4 py-1.5 rounded-full active:scale-95">
-            <Text className="text-xs font-bold text-[#00BDFF] tracking-wider uppercase">SNOOZE</Text>
+          <Text className="text-xs text-[#3b494c] mb-4 leading-normal">
+            Ready to log what you drank? Choose container presets or enter custom amounts.
+          </Text>
+          <TouchableOpacity 
+            onPress={() => router.push('/log')}
+            className="bg-[#006875] flex-row items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-95 shadow-sm shadow-cyan-900/10"
+          >
+            <Ionicons name="add" size={20} color="#white" style={{ marginRight: 2 }} />
+            <Text className="text-sm font-bold text-white uppercase tracking-wider">Log Intake Screen</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Hydration Tip Card */}
-        <View className="bg-[#12253A]/30 border border-[#162D44] rounded-3xl p-5 relative overflow-hidden">
-          <View className="flex-row items-center gap-2 mb-2">
-            <Ionicons name="bulb-outline" size={16} color="#FFD60A" />
-            <Text className="text-xs font-bold text-[#FFD60A] tracking-wider uppercase">DAILY TIP</Text>
+        {/* Reminders Bento Card (Multiple Reminders) */}
+        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+          <View className="flex-row items-center justify-between mb-4">
+            <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase">
+              DAILY REMINDERS
+            </Text>
+            <TouchableOpacity 
+              onPress={() => setShowAddForm(!showAddForm)}
+              className="w-7 h-7 rounded-full bg-[#006875]/10 items-center justify-center active:scale-95"
+            >
+              <Ionicons name={showAddForm ? 'close' : 'add'} size={18} color="#006875" />
+            </TouchableOpacity>
           </View>
-          <Text className="text-sm font-semibold text-white/90 leading-relaxed">
-            Adding a slice of lemon can improve digestion and flavor.
-          </Text>
+
+          {/* Add Reminder Form */}
+          {showAddForm && (
+            <View className="flex-row gap-2 mb-4 bg-[#eceef0]/30 p-3 rounded-2xl border border-[#eceef0]">
+              <TextInput
+                value={newReminderTime}
+                onChangeText={setNewReminderTime}
+                placeholder="e.g. 09:15 PM"
+                placeholderTextColor="#8a9cae"
+                className="flex-1 text-sm text-[#191c1e] font-semibold py-1 px-2 bg-white rounded-lg border border-black/5"
+              />
+              <TouchableOpacity 
+                onPress={addReminder}
+                className="bg-[#006875] px-4 py-2 rounded-lg items-center justify-center"
+              >
+                <Text className="text-xs font-bold text-white uppercase">Add</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Reminders List */}
+          <View className="space-y-3">
+            {reminders.map((reminder) => (
+              <View 
+                key={reminder.id}
+                className="flex-row items-center justify-between p-3 rounded-2xl bg-[#F7F9FB] border border-[#eceef0]"
+              >
+                <View className="flex-row items-center gap-3">
+                  <View className={`w-9 h-9 rounded-xl items-center justify-center ${
+                    reminder.enabled ? 'bg-[#00e5ff]/20' : 'bg-gray-200'
+                  }`}>
+                    <Ionicons 
+                      name="alarm" 
+                      size={18} 
+                      color={reminder.enabled ? '#006875' : '#8a9cae'} 
+                    />
+                  </View>
+                  <Text className={`text-sm font-bold ${
+                    reminder.enabled ? 'text-[#191c1e]' : 'text-[#8a9cae] line-through'
+                  }`}>
+                    {reminder.time}
+                  </Text>
+                </View>
+
+                <View className="flex-row items-center gap-3">
+                  <Switch
+                    value={reminder.enabled}
+                    onValueChange={() => toggleReminder(reminder.id)}
+                    trackColor={{ false: '#d1d5db', true: '#9cf0ff' }}
+                    thumbColor={reminder.enabled ? '#006875' : '#f4f3f4'}
+                  />
+                  <TouchableOpacity 
+                    onPress={() => deleteReminder(reminder.id)}
+                    className="p-1"
+                  >
+                    <Ionicons name="trash-outline" size={16} color="#ef4444" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Hydration Tip Card */}
+        <View className="rounded-3xl overflow-hidden h-40 shadow-sm">
+          <ImageBackground
+            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8IQasSEfxUZM8fElXgFTQr39jl9jNf2c1hSDSc93mGwr1owkSVmkUj2sHZywcVGBIe4cQ7nuHR0wa2dex0W8GnHiXVfFdo1epAoDchPP4ZRFx6QdDEfdKtPUpwcDSzihFHZF6QHZDTac0b-OlEJ8JUqtgKTGZJsRspT11t858pX4YAww43kMbI88nlW-XJpZoVKKSVj5_1Pv-32TMYFW0NZLi7FkWwfk0kS8VZlPdqm6Vj1j5lkICzZEpddnpQwQ2fuj_SUpjj2c' }}
+            className="w-full h-full justify-end"
+          >
+            {/* Overlay */}
+            <View className="absolute inset-0 bg-black/45" />
+            
+            {/* Content */}
+            <View className="p-5 z-10">
+              <Text className="text-[10px] font-bold text-white/70 tracking-wider uppercase mb-1">DAILY TIP</Text>
+              <Text className="text-sm font-semibold text-white leading-snug">
+                Adding a slice of lemon can improve digestion and flavor.
+              </Text>
+            </View>
+          </ImageBackground>
         </View>
       </ScrollView>
     </View>
