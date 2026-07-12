@@ -12,6 +12,10 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarIconStyle: {
+          width: 'auto',
+          height: '100%',
+        },
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: '#ECEEF0',

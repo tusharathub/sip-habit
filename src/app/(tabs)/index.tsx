@@ -335,7 +335,7 @@ export default function DashboardScreen() {
           </View>
 
           {/* Reminders List */}
-          <View className="space-y-3">
+          <View style={{ gap: 6 }}>
             {reminders.map((reminder) => (
               <View 
                 key={reminder.id}

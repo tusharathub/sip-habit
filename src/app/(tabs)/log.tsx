@@ -231,7 +231,7 @@ export default function LogScreen() {
               <Text className="text-sm text-[#8a9cae] font-semibold text-center">No water logged today yet.</Text>
             </View>
           ) : (
-            <View className="space-y-4">
+            <View style={{gap:6}}>
               {todayLogs.map((log) => (
                 <View 
                   key={log.id}
