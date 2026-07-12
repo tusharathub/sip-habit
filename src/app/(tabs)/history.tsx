@@ -74,12 +74,7 @@ export default function HistoryScreen() {
   );
   const averageIntakeL = (averageIntakeMl / 1000).toFixed(1);
 
-  // Consistency Calculation (Percentage of days target was met)
-  const pastDays = weeklyData.filter(d => !d.isFuture);
-  const targetMetDays = pastDays.filter(d => d.total >= dailyGoal).length;
-  const consistencyRate = pastDays.length > 0 
-    ? Math.round((targetMetDays / pastDays.length) * 100) 
-    : 0;
+
 
   // History List: Show past logged days in descending order (exclude future days)
   const historyList = [...weeklyData]
@@ -170,18 +165,26 @@ export default function HistoryScreen() {
             </View>
           </View>
 
-          {/* Consistency Card */}
-          <View className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-row items-center gap-3.5 shadow-sm">
-            <View className="w-12 h-12 rounded-2xl bg-[#bed5d8] items-center justify-center">
-              <Ionicons name="calendar" size={24} color="#091f21" />
-            </View>
-            <View className="flex-1">
-              <Text className="text-[9px] font-bold text-[#8a9cae] tracking-widest uppercase mb-0.5">
-                CONSISTENCY
-              </Text>
-              <Text className="text-base font-extrabold text-[#191c1e]">
-                {consistencyRate}%
-              </Text>
+          {/* Weekday Streak Fire Card */}
+          <View className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-col justify-between shadow-sm">
+            <Text className="text-[9px] font-bold text-[#8a9cae] tracking-widest uppercase mb-2">
+              WEEKLY TARGETS
+            </Text>
+            <View className="flex-row justify-between items-center w-full">
+              {weeklyData.map((d, idx) => {
+                const isGoalMet = d.total >= dailyGoal;
+                const letter = d.day === 'THU' ? 'T' : (d.day === 'SUN' || d.day === 'SAT' ? 'S' : d.day[0]);
+                return (
+                  <View key={idx} className="items-center gap-1.5 flex-1">
+                    <Text className="text-[9px] font-bold text-[#8a9cae]">{letter}</Text>
+                    <Ionicons 
+                      name={isGoalMet && !d.isFuture ? "flame" : "flame-outline"} 
+                      size={15} 
+                      color={isGoalMet && !d.isFuture ? "#ff9100" : "#d8dadc"} 
+                    />
+                  </View>
+                );
+              })}
             </View>
           </View>
         </View>
