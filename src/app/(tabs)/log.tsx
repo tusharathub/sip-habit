@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-  Modal,
-  TextInput,
   KeyboardAvoidingView,
+  Modal,
   Platform,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addDrink, removeDrink } from '../../store/slices/hydrationSlice';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function LogScreen() {
   const dispatch = useAppDispatch();
@@ -98,7 +98,7 @@ export default function LogScreen() {
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 160 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
         className="px-5 pt-6"
       >
         {/* Section Header */}
@@ -188,7 +188,7 @@ export default function LogScreen() {
         </View>
 
         {/* Quick Adjust Control */}
-        <View className="flex-row items-center justify-between bg-white border border-[#eceef0] rounded-full px-5 py-3 mb-6 shadow-sm">
+        <View className="flex-row items-center justify-between bg-white border border-[#eceef0] rounded-full px-5 py-3 mb-4 shadow-sm">
           <Text className="text-sm font-semibold text-[#3b494c]">Quick Adjust:</Text>
           <View className="flex-row gap-2">
             <TouchableOpacity 
@@ -207,6 +207,17 @@ export default function LogScreen() {
           </View>
         </View>
 
+        {/* Inline Add Water Button (Directly below Quick Adjust) */}
+        <TouchableOpacity 
+          onPress={handleAddWater}
+          className="bg-[#006875] w-full h-14 rounded-full flex-row items-center justify-center gap-2 active:scale-95 shadow-md mb-8"
+        >
+          <Ionicons name="add" size={20} color="white" />
+          <Text className="text-base font-bold text-white uppercase tracking-wider">
+            Add {selectedAmount}ml Water
+          </Text>
+        </TouchableOpacity>
+
         {/* Recent Logs Section */}
         <View className="mb-6">
           <View className="flex-row items-center justify-between mb-4">
@@ -222,7 +233,7 @@ export default function LogScreen() {
               <Text className="text-sm text-[#8a9cae] font-semibold text-center">No water logged today yet.</Text>
             </View>
           ) : (
-            <View className="space-y-3">
+            <View className="space-y-4">
               {todayLogs.map((log) => (
                 <View 
                   key={log.id}
@@ -253,18 +264,6 @@ export default function LogScreen() {
         </View>
 
       </ScrollView>
-
-      {/* Floating Bottom Logging Button */}
-      <TouchableOpacity 
-        onPress={handleAddWater}
-        style={{ bottom: insets.bottom + 80, alignSelf: 'center' }}
-        className="absolute left-5 right-5 max-w-md h-14 rounded-full bg-[#006875] flex-row items-center justify-center gap-2 active:scale-95 shadow-lg shadow-cyan-900/20"
-      >
-        <Ionicons name="add" size={20} color="white" />
-        <Text className="text-base font-bold text-white uppercase tracking-wider">
-          Add {selectedAmount}ml Water
-        </Text>
-      </TouchableOpacity>
 
       {/* Custom Amount Modal */}
       <Modal
