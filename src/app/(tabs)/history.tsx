@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 import {
-  Text,
-  View,
   ScrollView,
   StatusBar,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '../../store/hooks';
 import { DrinkLog } from '../../store/slices/hydrationSlice';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HistoryScreen() {
   const insets = useSafeAreaInsets();
@@ -105,11 +105,8 @@ export default function HistoryScreen() {
       {/* Top Header */}
       <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
         <View className="flex-row items-center gap-2">
-          <Ionicons name="water" size={24} color="#006875" />
-          <Text className="text-xl font-bold text-[#006875] tracking-tight">H2O Vitality</Text>
-        </View>
-        <View className="w-10 h-10 rounded-full items-center justify-center bg-[#eceef0]">
-          <Ionicons name="analytics" size={20} color="#006875" />
+          <Ionicons name="water-outline" size={24} color="#006875" />
+          <Text className="text-xl font-bold text-[#006875] tracking-tight">Sip Habit</Text>
         </View>
       </View>
 

@@ -89,12 +89,9 @@ export default function LogScreen() {
       {/* Top Header */}
       <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
         <View className="flex-row items-center gap-2">
-          <Ionicons name="water" size={24} color="#006875" />
-          <Text className="text-xl font-bold text-[#006875] tracking-tight">H2O Vitality</Text>
+          <Ionicons name="water-outline" size={24} color="#006875" />
+          <Text className="text-xl font-bold text-[#006875] tracking-tight">Sip Habit</Text>
         </View>
-        <TouchableOpacity className="w-10 h-10 rounded-full items-center justify-center bg-[#eceef0] active:scale-95">
-          <Ionicons name="settings-outline" size={20} color="#3b494c" />
-        </TouchableOpacity>
       </View>
 
       <ScrollView 
