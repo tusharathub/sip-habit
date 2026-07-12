@@ -51,7 +51,15 @@ export default function HistoryScreen() {
       });
       
       const total = dayLogs.reduce((sum, log) => sum + log.amount, 0);
-      const percent = Math.min(100, Math.round((total / dailyGoal) * 100));
+      const isTodayDate = 
+        dayDate.getDate() === today.getDate() &&
+        dayDate.getMonth() === today.getMonth() &&
+        dayDate.getFullYear() === today.getFullYear();
+
+      const dayGoal = isTodayDate 
+        ? dailyGoal 
+        : (dayLogs.length > 0 && dayLogs[0].dailyGoal ? dayLogs[0].dailyGoal : dailyGoal);
+      const percent = Math.min(100, Math.round((total / dayGoal) * 100));
       
       // Format Date string
       const dateStr = dayDate.toLocaleDateString('en-US', {
@@ -66,6 +74,7 @@ export default function HistoryScreen() {
         percent,
         dateStr,
         isFuture: dayDate > today,
+        dailyGoal: dayGoal,
       };
     });
   };
@@ -175,10 +184,10 @@ export default function HistoryScreen() {
               </View>
               <View className="items-end">
                 <Text className="text-xs font-extrabold text-[#006875]">
-                  {weeklyData[selectedBarIdx].total}ml / {dailyGoal}ml
+                  {weeklyData[selectedBarIdx].total}ml / {weeklyData[selectedBarIdx].dailyGoal}ml
                 </Text>
                 <Text className="text-[9px] font-bold uppercase tracking-wider text-[#3b494c] mt-0.5">
-                  {weeklyData[selectedBarIdx].total >= dailyGoal ? 'Goal Met 🎉' : 'Missed 💧'}
+                  {weeklyData[selectedBarIdx].total >= weeklyData[selectedBarIdx].dailyGoal ? 'Goal Met 🎉' : 'Missed 💧'}
                 </Text>
               </View>
             </View>
@@ -209,7 +218,7 @@ export default function HistoryScreen() {
             </Text>
             <View className="flex-row justify-between items-center w-full">
               {weeklyData.map((d, idx) => {
-                const isGoalMet = d.total >= dailyGoal;
+                const isGoalMet = d.total >= d.dailyGoal;
                 const letter = d.day === 'THU' ? 'T' : (d.day === 'SUN' || d.day === 'SAT' ? 'S' : d.day[0]);
                 return (
                   <View key={idx} className="items-center gap-1.5 flex-1">
@@ -232,7 +241,7 @@ export default function HistoryScreen() {
           
           <View className="space-y-4">
             {historyList.map((dayData, idx) => {
-              const isGoalMet = dayData.total >= dailyGoal;
+              const isGoalMet = dayData.total >= dayData.dailyGoal;
               return (
                 <View 
                   key={idx}
@@ -255,7 +264,7 @@ export default function HistoryScreen() {
                         {dayData.dateStr}
                       </Text>
                       <Text className="text-sm font-semibold text-[#3b494c] mt-0.5">
-                        {(dayData.total / 1000).toFixed(1)}L / {(dailyGoal / 1000).toFixed(1)}L
+                        {(dayData.total / 1000).toFixed(1)}L / {(dayData.dailyGoal / 1000).toFixed(1)}L
                       </Text>
                     </View>
                   </View>

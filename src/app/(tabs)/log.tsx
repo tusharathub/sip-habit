@@ -22,6 +22,7 @@ export default function LogScreen() {
   // Fetch logs and today's total from Redux
   const logs = useAppSelector((state) => state.hydration.logs);
   const todayIntake = useAppSelector((state) => state.hydration.todayIntake);
+  const dailyGoal = useAppSelector((state) => state.settings.dailyGoal);
 
   // States
   const [selectedAmount, setSelectedAmount] = useState(500); // default 500ml
@@ -50,7 +51,7 @@ export default function LogScreen() {
   // Add water to Redux state
   const handleAddWater = () => {
     console.log('LOG SCREEN: Dispatching addDrink with amount =', selectedAmount);
-    dispatch(addDrink({ amount: selectedAmount, containerType: selectedContainer }));
+    dispatch(addDrink({ amount: selectedAmount, containerType: selectedContainer, dailyGoal }));
   };
 
   // Handle Quick Adjust adjustments

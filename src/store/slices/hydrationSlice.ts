@@ -5,6 +5,7 @@ export interface DrinkLog {
     amount: number;
     timestamp: string;
     containerType: 'cup' | 'bottle' | 'large' | 'custom';
+    dailyGoal: number; // The goal active when logged
 }
 
 interface HydrationState {
@@ -37,13 +38,14 @@ export const hydrationSlice = createSlice({
     reducers: {
         addDrink: (
             state,
-            action: PayloadAction<{ amount: number; containerType: DrinkLog['containerType'] }>
+            action: PayloadAction<{ amount: number; containerType: DrinkLog['containerType']; dailyGoal: number }>
         ) => {
             const newLog: DrinkLog = {
                 id: Math.random().toString(36).substring(2, 9) + Date.now(),
                 amount: action.payload.amount,
                 containerType: action.payload.containerType,
                 timestamp: new Date().toISOString(),
+                dailyGoal: action.payload.dailyGoal,
             };
 
             state.logs.unshift(newLog);
