@@ -26,6 +26,7 @@ export default function ProfileScreen() {
   // Modal local state
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [customGoalInput, setCustomGoalInput] = useState('');
+  const [isHowToUseExpanded, setIsHowToUseExpanded] = useState(false);
 
   // Handle updates
   const adjustGoal = (amount: number) => {
@@ -170,6 +171,104 @@ export default function ProfileScreen() {
               </Text>
             </View>
           </View>
+        </View>
+
+        {/* Bento Card 3: How to Use & Privacy (Collapsible Accordion) */}
+        <View className="bg-white border border-[#eceef0] rounded-3xl mb-5 shadow-sm overflow-hidden">
+          <TouchableOpacity 
+            onPress={() => setIsHowToUseExpanded(!isHowToUseExpanded)}
+            activeOpacity={0.7}
+            className="flex-row items-center justify-between p-5"
+          >
+            <View className="flex-row items-center gap-2.5">
+              <Ionicons name="help-circle-outline" size={22} color="#006875" />
+              <Text className="text-sm font-bold text-[#006875] tracking-wide uppercase">
+                How to Use & Privacy
+              </Text>
+            </View>
+            <Ionicons 
+              name={isHowToUseExpanded ? "chevron-up" : "chevron-down"} 
+              size={20} 
+              color="#006875" 
+            />
+          </TouchableOpacity>
+
+          {isHowToUseExpanded && (
+            <View className="px-5 pb-5 border-t border-[#eceef0] pt-4">
+              {/* Quick Guide */}
+              <View className="mb-4">
+                <Text className="text-sm font-bold text-[#191c1e] mb-3">Quick Guide</Text>
+                
+                <View className="flex-row items-start gap-2.5 mb-2.5">
+                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                    <Text className="text-[10px] font-bold text-[#006875]">1</Text>
+                  </View>
+                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                    Set your weight above to calculate a recommended daily target, or customize it to your liking.
+                  </Text>
+                </View>
+
+                <View className="flex-row items-start gap-2.5 mb-2.5">
+                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                    <Text className="text-[10px] font-bold text-[#006875]">2</Text>
+                  </View>
+                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                    On the main screen, select and tap a cup size to quickly log your water intake throughout the day.
+                  </Text>
+                </View>
+
+                <View className="flex-row items-start gap-2.5 mb-2.5">
+                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                    <Text className="text-[10px] font-bold text-[#006875]">3</Text>
+                  </View>
+                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                    Check the History and Log tabs to view detailed statistics and charts of your hydration progress.
+                  </Text>
+                </View>
+
+                <View className="flex-row items-start gap-2.5">
+                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                    <Text className="text-[10px] font-bold text-[#006875]">4</Text>
+                  </View>
+                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                    Enable reminders to receive periodic local notifications that keep you on track.
+                  </Text>
+                </View>
+              </View>
+
+              <View className="h-[1px] bg-[#eceef0] my-2" />
+
+              {/* Privacy & Permissions */}
+              <View className="mt-3">
+                <View className="flex-row items-center gap-2 mb-2">
+                  <Ionicons name="shield-checkmark-outline" size={18} color="#10b981" />
+                  <Text className="text-sm font-bold text-[#191c1e]">Your Data, Your Device</Text>
+                </View>
+                <Text className="text-xs text-[#3b494c] leading-relaxed mb-3">
+                  We highly value your privacy. The app is built with a local-first architecture:
+                </Text>
+                <View className="bg-gray-50 border border-gray-100 p-3.5 rounded-2xl">
+                  <View className="flex-row items-center gap-2 mb-1.5">
+                    <Ionicons name="cloud-offline-outline" size={15} color="#006875" />
+                    <Text className="text-[11px] font-bold text-[#006875]">100% On-Device & Offline</Text>
+                  </View>
+                  <Text className="text-[11px] text-[#5c6f84] leading-relaxed mb-4">
+                    No user accounts, tracking, or cloud sync. Everything is stored locally on your device and never leaves it.
+                  </Text>
+
+                  <View className="flex-row items-start gap-2 mb-1.5">
+                    <Ionicons name="notifications-outline" size={15} color="#006875" style={{ marginTop: 1 }} />
+                    <View className="flex-1">
+                      <Text className="text-[11px] font-bold text-[#006875]">Notification Permission Only</Text>
+                      <Text className="text-[11px] text-[#5c6f84] leading-relaxed mt-1">
+                        We request notification permission strictly to trigger local reminders for your water intake. No other permissions or personal data are collected.
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
 
