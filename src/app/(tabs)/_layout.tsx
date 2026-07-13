@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text, Platform } from 'react-native';
+import { View, Text, Platform, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
@@ -12,6 +12,13 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarButton: ({ ref, ...props }) => (
+          <Pressable
+            {...props}
+            android_ripple={null}
+            style={props.style}
+          />
+        ),
         tabBarIconStyle: {
           width: 'auto',
           height: '100%',
