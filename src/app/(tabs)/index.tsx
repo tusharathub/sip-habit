@@ -18,12 +18,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
-
-interface Reminder {
-  id: string;
-  time: string;
-  enabled: boolean;
-}
+import { addReminder, toggleReminderState, removeReminder, Reminder } from '../../store/slices/remindersSlice';
+import { scheduleDailyReminder, cancelReminderNotification } from '../../utils/notifications';
 
 // Reusable Snapping Scroll Picker (Mimics iOS Native Wheel Picker with Infinite Loop)
 interface ScrollPickerProps {
@@ -136,11 +132,8 @@ export default function DashboardScreen() {
   const dailyGoal = useAppSelector((state) => state.settings.dailyGoal);
   const streak = useAppSelector((state) => state.hydration.streak);
 
-  // Reminders Local State
-  const [reminders, setReminders] = useState<Reminder[]>([
-    { id: '1', time: '08:00', enabled: true },
-    { id: '2', time: '12:00', enabled: true },
-  ]);
+  // Reminders Redux State
+  const reminders = useAppSelector((state) => state.reminders.list);
   
   // Time Picker Modal States
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -190,25 +183,51 @@ export default function DashboardScreen() {
   const remaining = Math.max(0, dailyGoal - todayIntake);
 
   // Toggle reminder
-  const toggleReminder = (id: string) => {
-    setReminders(prev =>
-      prev.map(r => (r.id === id ? { ...r, enabled: !r.enabled } : r))
-    );
+  const toggleReminder = async (id: string) => {
+    const reminder = reminders.find(r => r.id === id);
+    if (!reminder) return;
+
+    const nextEnabled = !reminder.enabled;
+    let nextNotificationId = reminder.notificationId;
+
+    if (nextEnabled) {
+      // Schedule reminder
+      const newNotificationId = await scheduleDailyReminder(reminder.time);
+      nextNotificationId = newNotificationId;
+    } else {
+      // Cancel reminder
+      if (reminder.notificationId) {
+        await cancelReminderNotification(reminder.notificationId);
+        nextNotificationId = null;
+      }
+    }
+
+    dispatch(toggleReminderState({ id, enabled: nextEnabled, notificationId: nextNotificationId }));
   };
 
   // Add reminder from selected state
-  const handleAddReminder = () => {
+  const handleAddReminder = async () => {
     const timeStr = `${selectedHour}:${selectedMinute}`;
     const newId = Math.random().toString(36).substring(2, 9);
-    setReminders(prev => [
-      ...prev,
-      { id: newId, time: timeStr, enabled: true },
-    ]);
+    
+    // Automatically schedule since new reminder starts enabled
+    const notificationId = await scheduleDailyReminder(timeStr);
+
+    dispatch(addReminder({
+      id: newId,
+      time: timeStr,
+      enabled: true,
+      notificationId
+    }));
     setShowTimePicker(false);
   };
 
-  const deleteReminder = (id: string) => {
-    setReminders(prev => prev.filter(r => r.id !== id));
+  const deleteReminder = async (id: string) => {
+    const reminder = reminders.find(r => r.id === id);
+    if (reminder && reminder.notificationId) {
+      await cancelReminderNotification(reminder.notificationId);
+    }
+    dispatch(removeReminder(id));
   };
 
   const rotate1 = wave1Anim.interpolate({

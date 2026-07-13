@@ -11,6 +11,7 @@ import {
 } from 'redux-persist';
 import hydrationReducer from './slices/hydrationSlice';
 import settingsReducer from './slices/settingsSlice';
+import remindersReducer from './slices/remindersSlice';
 
 import { NativeModules, Platform } from 'react-native';
 
@@ -66,13 +67,14 @@ const safeStorage = {
 const rootReducer = combineReducers({
     hydration: hydrationReducer,
     settings: settingsReducer,
+    reminders: remindersReducer,
 });
 
 // Configure Redux Persist
 const persistConfig = {
     key: 'root',
     storage: safeStorage,
-    whitelist: ['hydration', 'settings'],
+    whitelist: ['hydration', 'settings', 'reminders'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
