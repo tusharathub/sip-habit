@@ -27,6 +27,7 @@ export default function ProfileScreen() {
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [customGoalInput, setCustomGoalInput] = useState('');
   const [isHowToUseExpanded, setIsHowToUseExpanded] = useState(false);
+  const [isWidgetGuideExpanded, setIsWidgetGuideExpanded] = useState(false);
 
   // Handle updates
   const adjustGoal = (amount: number) => {
@@ -266,6 +267,71 @@ export default function ProfileScreen() {
                     </View>
                   </View>
                 </View>
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* Bento Card 4: How to Add & Use Widget */}
+        <View className="bg-white border border-[#eceef0] rounded-3xl mb-5 shadow-sm overflow-hidden">
+          <TouchableOpacity 
+            onPress={() => setIsWidgetGuideExpanded(!isWidgetGuideExpanded)}
+            activeOpacity={0.7}
+            className="flex-row items-center justify-between p-5"
+          >
+            <View className="flex-row items-center gap-2.5">
+              <Ionicons name="grid-outline" size={22} color="#006875" />
+              <Text className="text-sm font-bold text-[#006875] tracking-wide uppercase">
+                Home Screen Widget
+              </Text>
+            </View>
+            <Ionicons 
+              name={isWidgetGuideExpanded ? "chevron-up" : "chevron-down"} 
+              size={20} 
+              color="#006875" 
+            />
+          </TouchableOpacity>
+
+          {isWidgetGuideExpanded && (
+            <View className="px-5 pb-5 border-t border-[#eceef0] pt-4">
+              <Text className="text-xs text-[#3b494c] leading-relaxed mb-4">
+                Track your daily progress and log drinks directly from your device home screen:
+              </Text>
+
+              <View className="flex-row items-start gap-2.5 mb-2.5">
+                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                  <Text className="text-[10px] font-bold text-[#006875]">1</Text>
+                </View>
+                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                  Go to your phone's home screen, <Text className="font-semibold text-[#191c1e]">long-press</Text> empty space, and choose <Text className="font-semibold text-[#191c1e]">Widgets</Text>.
+                </Text>
+              </View>
+
+              <View className="flex-row items-start gap-2.5 mb-2.5">
+                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                  <Text className="text-[10px] font-bold text-[#006875]">2</Text>
+                </View>
+                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                  Locate <Text className="font-semibold text-[#191c1e]">Sip Habit</Text> in the widgets list.
+                </Text>
+              </View>
+
+              <View className="flex-row items-start gap-2.5 mb-2.5">
+                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                  <Text className="text-[10px] font-bold text-[#006875]">3</Text>
+                </View>
+                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                  Touch and hold the <Text className="font-semibold text-[#191c1e]">Sip Habit Progress</Text> widget, then drag it onto your screen.
+                </Text>
+              </View>
+
+              <View className="flex-row items-start gap-2.5">
+                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                  <Text className="text-[10px] font-bold text-[#006875]">4</Text>
+                </View>
+                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
+                  Tap any of the logging buttons (<Text className="font-semibold text-[#006875]">+250</Text>, <Text className="font-semibold text-[#006875]">+500</Text>, <Text className="font-semibold text-[#006875]">+750</Text>) to record water instantly.
+                </Text>
               </View>
             </View>
           )}
