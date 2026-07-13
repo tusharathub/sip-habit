@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
 import { addReminder, toggleReminderState, removeReminder, Reminder } from '../../store/slices/remindersSlice';
 import { scheduleDailyReminder, cancelReminderNotification } from '../../utils/notifications';
+import { updateWidgetData } from '../../../modules/water-widget';
 
 // Reusable Snapping Scroll Picker (Mimics iOS Native Wheel Picker with Infinite Loop)
 interface ScrollPickerProps {
@@ -178,6 +179,11 @@ export default function DashboardScreen() {
   useEffect(() => {
     dispatch(updateStreak({ dailyGoal }));
   }, [todayIntake, dailyGoal, dispatch]);
+
+  // Synchronise home screen widget data on update
+  useEffect(() => {
+    updateWidgetData(todayIntake, dailyGoal);
+  }, [todayIntake, dailyGoal]);
 
   const percentage = Math.min(100, Math.round((todayIntake / dailyGoal) * 100)) || 0;
   const remaining = Math.max(0, dailyGoal - todayIntake);

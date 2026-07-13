@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "water",
+    "name": "Sip Habit",
     "slug": "water",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,6 +26,7 @@
     },
     "plugins": [
       "expo-router",
+      "./withAndroidWidget",
       [
         "expo-splash-screen",
         {
