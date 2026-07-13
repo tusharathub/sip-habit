@@ -16,11 +16,11 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { updateWidgetData } from '../../../modules/water-widget';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
-import { addReminder, toggleReminderState, removeReminder, Reminder } from '../../store/slices/remindersSlice';
-import { scheduleDailyReminder, cancelReminderNotification } from '../../utils/notifications';
-import { updateWidgetData } from '../../../modules/water-widget';
+import { addReminder, removeReminder, toggleReminderState } from '../../store/slices/remindersSlice';
+import { cancelReminderNotification, scheduleDailyReminder } from '../../utils/notifications';
 
 // Reusable Snapping Scroll Picker (Mimics iOS Native Wheel Picker with Infinite Loop)
 interface ScrollPickerProps {
@@ -32,15 +32,13 @@ interface ScrollPickerProps {
 
 function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: ScrollPickerProps) {
   const scrollViewRef = useRef<ScrollView>(null);
-  const itemHeight = 40;
-  const containerHeight = 120;
+  const itemHeight = 50;
+  const containerHeight = 150;
   
-  // Repeat items 3 times to support infinite scroll illusion
   const repeatedItems = [...items, ...items, ...items];
   const paddedItems = ['', ...repeatedItems, ''];
-  const midIndexOffset = items.length; // Offset to middle copy
-  
-  // Flag to prevent double scrolling triggers
+  const midIndexOffset = items.length;
+  const currentY = useRef(0);
   const isJumping = useRef(false);
 
   useEffect(() => {
@@ -48,19 +46,24 @@ function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: Scrol
     const selectedIndex = items.indexOf(selectedValue);
     if (selectedIndex !== -1 && scrollViewRef.current) {
       const targetIndex = selectedIndex + midIndexOffset;
-      const timer = setTimeout(() => {
-        scrollViewRef.current?.scrollTo({
-          y: targetIndex * itemHeight,
+      const targetY = targetIndex * itemHeight;
+      if (Math.abs(currentY.current - targetY) > 5) {
+        scrollViewRef.current.scrollTo({
+          y: targetY,
           animated: false,
         });
-      }, 50);
-      return () => clearTimeout(timer);
+        currentY.current = targetY;
+      }
     }
   }, [selectedValue, items]);
 
   const handleScroll = (event: any) => {
-    if (isJumping.current) return;
+    currentY.current = event.nativeEvent.contentOffset.y;
+  };
+
+  const handleScrollEnd = (event: any) => {
     const yOffset = event.nativeEvent.contentOffset.y;
+    currentY.current = yOffset;
     const index = Math.round(yOffset / itemHeight);
     
     if (index >= 0 && index < repeatedItems.length) {
@@ -71,21 +74,18 @@ function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: Scrol
         onValueChange(newValue);
       }
 
-      // Silent Jump Trick: Snap back to the middle segment when approaching margins
       const lowerBound = items.length;
       const upperBound = items.length * 2;
       
       if (index < lowerBound || index >= upperBound) {
         isJumping.current = true;
         const targetIndex = originalIndex + midIndexOffset;
-        
-        // Jump without animation so it is completely invisible to the user
+        const targetY = targetIndex * itemHeight;
         scrollViewRef.current?.scrollTo({
-          y: targetIndex * itemHeight,
+          y: targetY,
           animated: false,
         });
-        
-        // Reset flag after a tiny delay
+        currentY.current = targetY;
         setTimeout(() => {
           isJumping.current = false;
         }, 50);
@@ -94,13 +94,16 @@ function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: Scrol
   };
 
   return (
-    <View style={{ height: containerHeight, width }} className="relative justify-center overflow-hidden">
+    <View style={{ height: containerHeight, width }} className="justify-center overflow-hidden">
       <ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
         snapToInterval={itemHeight}
         decelerationRate="fast"
-        onMomentumScrollEnd={handleScroll}
+        onScroll={handleScroll}
+        onMomentumScrollEnd={handleScrollEnd}
+        onScrollEndDrag={handleScrollEnd}
+        scrollEventThrottle={16}
         contentContainerStyle={{ paddingVertical: 0 }}
       >
         {paddedItems.map((item, idx) => (
@@ -111,7 +114,7 @@ function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: Scrol
           >
             <Text 
               className={`text-2xl font-bold tracking-wider ${
-                item === selectedValue ? 'text-[#001f24] scale-110' : 'text-[#8a9cae]/60'
+                item === selectedValue ? 'text-[#001f24] scale-110' : 'text-[#8a9cae]/40'
               }`}
             >
               {item}
@@ -226,6 +229,15 @@ export default function DashboardScreen() {
       notificationId
     }));
     setShowTimePicker(false);
+  };
+
+  const handlePresetAdd = (hoursOffset: number) => {
+    const now = new Date();
+    now.setHours(now.getHours() + hoursOffset);
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    setSelectedHour(h);
+    setSelectedMinute(m);
   };
 
   const deleteReminder = async (id: string) => {
@@ -423,24 +435,75 @@ export default function DashboardScreen() {
       <Modal
         visible={showTimePicker}
         transparent={true}
-        animationType="fade"
+        animationType="slide"
         onRequestClose={() => setShowTimePicker(false)}
       >
-        <View className="flex-1 bg-black/50 justify-center items-center px-6">
-          <View className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] shadow-2xl items-center">
+        <View className="flex-1 bg-black/55 justify-end items-center px-5 pb-6">
+          <View className="bg-white w-full rounded-[32px] p-6 border border-[#eceef0] shadow-2xl items-center pb-8">
             
-            <Text className="text-base font-bold text-[#006875] tracking-wide mb-6">
-              ADD DAILY REMINDER
+            {/* Drag handle decorator */}
+            <View className="w-10 h-1 bg-gray-200 rounded-full mb-5" />
+
+            <Text className="text-xl font-bold text-[#191c1e] mb-5 self-start">
+              Set Reminder
             </Text>
 
+            {/* Preset Options pills */}
+            <View className="flex-row gap-2 mb-6 w-full justify-between">
+              <TouchableOpacity 
+                onPress={() => setShowTimePicker(false)}
+                className="flex-1 py-3 px-1 bg-white border border-[#eceef0] rounded-2xl items-center active:scale-95"
+              >
+                <Text className="text-xs font-semibold text-[#5c6f84]">No Reminder</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                onPress={() => handlePresetAdd(1)}
+                className="flex-1 py-3 px-1 bg-[#F2F3F5] rounded-2xl items-center active:scale-95"
+              >
+                <Text className="text-xs font-semibold text-[#006875]">In an Hour</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                onPress={() => handlePresetAdd(2)}
+                className="flex-1 py-3 px-1 bg-[#F2F3F5] rounded-2xl items-center active:scale-95"
+              >
+                <Text className="text-xs font-semibold text-[#006875]">In Two Hours</Text>
+              </TouchableOpacity>
+            </View>
+
             {/* iOS-Style Snapping Wheel Area */}
-            <View className="flex-row items-center justify-center bg-gray-50 border border-gray-100 rounded-2xl w-full h-[120px] mb-8 relative">
+            <View className="flex-row items-center justify-center bg-[#F2F3F5] border border-[#eceef0] rounded-3xl w-full h-[150px] mb-8 relative">
               
               {/* Highlight center bar indicator overlay */}
               <View 
-                style={{ height: 40, top: 40 }}
-                className="absolute left-4 right-4 border-y border-[#006875]/25 pointer-events-none"
+                style={{ height: 50, top: 50 }}
+                className="absolute left-4 right-4 border-y border-[#006875]/15 pointer-events-none"
               />
+
+              {/* Left scale ruler ticks */}
+              <View className="absolute left-4 top-0 bottom-0 justify-between py-4 w-5 pointer-events-none">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <View 
+                    key={i} 
+                    className={`h-[1px] ${
+                      i === 4 ? 'w-5 bg-[#006875] h-[1.5px]' : i % 2 === 0 ? 'w-3 bg-[#8a9cae]/35' : 'w-1.5 bg-[#8a9cae]/20'
+                    }`} 
+                  />
+                ))}
+              </View>
+
+              {/* Right scale ruler ticks */}
+              <View className="absolute right-4 top-0 bottom-0 justify-between py-4 w-5 pointer-events-none">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <View 
+                    key={i} 
+                    className={`h-[1px] ${
+                      i === 4 ? 'w-5 bg-[#006875] h-[1.5px]' : i % 2 === 0 ? 'w-3 bg-[#8a9cae]/35' : 'w-1.5 bg-[#8a9cae]/20'
+                    }`} 
+                  />
+                ))}
+              </View>
 
               {/* Scrollable Hours Wheel */}
               <ScrollPicker 
@@ -450,7 +513,7 @@ export default function DashboardScreen() {
                 width={80}
               />
 
-              <Text className="text-2xl font-bold text-[#001f24] mx-4 -mt-1">:</Text>
+              <Text className="text-3xl font-light text-[#8a9cae]/60 mx-6 -mt-1">:</Text>
 
               {/* Scrollable Minutes Wheel */}
               <ScrollPicker 
@@ -466,16 +529,17 @@ export default function DashboardScreen() {
             <View className="flex-row gap-3 w-full">
               <TouchableOpacity 
                 onPress={() => setShowTimePicker(false)}
-                className="flex-1 py-3 bg-[#eceef0] rounded-xl items-center"
+                className="flex-1 py-3.5 bg-white border border-[#eceef0] rounded-2xl items-center active:scale-95"
               >
-                <Text className="text-xs font-bold text-[#3b494c]">CANCEL</Text>
+                <Text className="text-sm font-bold text-[#5c6f84]">Cancel</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 onPress={handleAddReminder}
-                className="flex-1 py-3 bg-[#006875] rounded-xl items-center animate-pulse"
+                className="flex-[1.5] py-3.5 rounded-2xl items-center active:scale-95"
+                style={{ backgroundColor: '#00c5ff' }}
               >
-                <Text className="text-xs font-bold text-white">SAVE TIME</Text>
+                <Text className="text-sm font-bold text-white">Done</Text>
               </TouchableOpacity>
             </View>
 

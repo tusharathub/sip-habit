@@ -92,7 +92,7 @@ export default function ProfileScreen() {
         className="px-5 pt-6"
       >
         {/* User Card */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 flex-row items-center gap-4 shadow-sm">
+        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 flex-row items-center gap-4 shadow-sm">
           <View className="w-14 h-14 rounded-full bg-[#006875]/15 items-center justify-center">
             <Ionicons name="person" size={28} color="#006875" />
           </View>
@@ -103,7 +103,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Bento Card 1: Intake Goal Adjuster */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 shadow-sm">
           <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-4">
             DAILY INTAKE GOAL
           </Text>
@@ -138,7 +138,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Bento Card 2: Body Parameters (Weight Adjuster) */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 shadow-sm">
           <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-4">
             BODY WEIGHT PARAMETER
           </Text>
@@ -175,7 +175,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Bento Card 3: How to Use & Privacy (Collapsible Accordion) */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl mb-5 shadow-sm overflow-hidden">
+        <View className="bg-white border border-[#eceef0] rounded-3xl mb-3 shadow-sm overflow-hidden">
           <TouchableOpacity 
             onPress={() => setIsHowToUseExpanded(!isHowToUseExpanded)}
             activeOpacity={0.7}
