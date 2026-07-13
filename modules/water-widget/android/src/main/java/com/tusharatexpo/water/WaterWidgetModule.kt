@@ -38,41 +38,51 @@ class WaterWidgetModule : Module() {
     }
 
     Function("updateWidgetData") { today: Int, goal: Int ->
-      val context = appContext.reactContext ?: return@Function
-      val prefs = context.getSharedPreferences("WaterWidgetPrefs", Context.MODE_PRIVATE)
-      prefs.edit().apply {
-        putInt("todayIntake", today)
-        putInt("dailyGoal", goal)
-        apply()
-      }
+      val context = appContext.reactContext
+      if (context != null) {
+        val prefs = context.getSharedPreferences("WaterWidgetPrefs", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+          putInt("todayIntake", today)
+          putInt("dailyGoal", goal)
+          apply()
+        }
 
-      // Notify the widget provider to redraw the UI immediately
-      val intent = Intent(context, WaterWidgetProvider::class.java).apply {
-        action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        // Notify the widget provider to redraw the UI immediately
+        val intent = Intent(context, WaterWidgetProvider::class.java).apply {
+          action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        }
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, WaterWidgetProvider::class.java))
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        context.sendBroadcast(intent)
       }
-      val appWidgetManager = AppWidgetManager.getInstance(context)
-      val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, WaterWidgetProvider::class.java))
-      intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-      context.sendBroadcast(intent)
     }
 
     Function("getPendingLogs") { ->
-      val context = appContext.reactContext ?: return@Function listOf<Int>()
-      val prefs = context.getSharedPreferences("WaterWidgetPrefs", Context.MODE_PRIVATE)
-      val logsStr = prefs.getString("pendingLogs", "") ?: ""
-      if (logsStr.isEmpty()) return@Function listOf<Int>()
-      
-      try {
-        logsStr.split(",").filter { it.isNotEmpty() }.map { it.toInt() }
-      } catch (e: Exception) {
+      val context = appContext.reactContext
+      if (context == null) {
         listOf<Int>()
+      } else {
+        val prefs = context.getSharedPreferences("WaterWidgetPrefs", Context.MODE_PRIVATE)
+        val logsStr = prefs.getString("pendingLogs", "") ?: ""
+        if (logsStr.isEmpty()) {
+          listOf<Int>()
+        } else {
+          try {
+            logsStr.split(",").filter { it.isNotEmpty() }.map { it.toInt() }
+          } catch (e: Exception) {
+            listOf<Int>()
+          }
+        }
       }
     }
 
     Function("clearPendingLogs") { ->
-      val context = appContext.reactContext ?: return@Function
-      val prefs = context.getSharedPreferences("WaterWidgetPrefs", Context.MODE_PRIVATE)
-      prefs.edit().putString("pendingLogs", "").apply()
+      val context = appContext.reactContext
+      if (context != null) {
+        val prefs = context.getSharedPreferences("WaterWidgetPrefs", Context.MODE_PRIVATE)
+        prefs.edit().putString("pendingLogs", "").apply()
+      }
     }
   }
 }
