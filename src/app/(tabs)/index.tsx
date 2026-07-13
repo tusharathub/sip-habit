@@ -13,6 +13,7 @@ import {
   Switch,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -240,6 +241,15 @@ export default function DashboardScreen() {
     setSelectedMinute(m);
   };
 
+  const openTimePicker = () => {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    setSelectedHour(h);
+    setSelectedMinute(m);
+    setShowTimePicker(true);
+  };
+
   const deleteReminder = async (id: string) => {
     const reminder = reminders.find(r => r.id === id);
     if (reminder && reminder.notificationId) {
@@ -364,7 +374,7 @@ export default function DashboardScreen() {
               DAILY REMINDERS
             </Text>
             <TouchableOpacity 
-              onPress={() => setShowTimePicker(true)}
+              onPress={openTimePicker}
               className="w-7 h-7 rounded-full bg-[#006875]/10 items-center justify-center active:scale-95"
             >
               <Ionicons name="add" size={18} color="#006875" />
@@ -438,8 +448,15 @@ export default function DashboardScreen() {
         animationType="slide"
         onRequestClose={() => setShowTimePicker(false)}
       >
-        <View className="flex-1 bg-black/55 justify-end items-center px-5 pb-6">
-          <View className="bg-white w-full rounded-[32px] p-6 border border-[#eceef0] shadow-2xl items-center pb-8">
+        <View className="flex-1 justify-end items-center px-5 pb-6">
+          {/* Backdrop absolute backdrop sibling */}
+          <TouchableOpacity 
+            activeOpacity={1}
+            onPress={() => setShowTimePicker(false)}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.55)' }}
+          />
+
+          <View className="bg-white w-full rounded-[32px] p-6 border border-[#eceef0] shadow-2xl items-center pb-8 z-10">
             
             {/* Drag handle decorator */}
             <View className="w-10 h-1 bg-gray-200 rounded-full mb-5" />
