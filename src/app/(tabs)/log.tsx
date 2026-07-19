@@ -14,10 +14,13 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addDrink, removeDrink } from '../../store/slices/hydrationSlice';
+import { useToast } from '../../components/Toast';
 
 export default function LogScreen() {
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
+  const { showToast } = useToast();
+
   
   // Fetch logs and today's total from Redux
   const logs = useAppSelector((state) => state.hydration.logs);
@@ -48,10 +51,13 @@ export default function LogScreen() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // Add water to Redux state
   const handleAddWater = () => {
     console.log('LOG SCREEN: Dispatching addDrink with amount =', selectedAmount);
     dispatch(addDrink({ amount: selectedAmount, containerType: selectedContainer, dailyGoal }));
+    showToast({
+      message: `Successfully logged ${selectedAmount}ml of water! 💧`,
+      type: 'success',
+    });
   };
 
   // Handle Quick Adjust adjustments
@@ -249,7 +255,13 @@ export default function LogScreen() {
                   <View className="flex-row items-center gap-4">
                     <Text className="text-base font-bold text-[#006875]">{log.amount}ml</Text>
                     <TouchableOpacity 
-                      onPress={() => dispatch(removeDrink(log.id))}
+                      onPress={() => {
+                        dispatch(removeDrink(log.id));
+                        showToast({
+                          message: `Deleted ${log.amount}ml water log`,
+                          type: 'info',
+                        });
+                      }}
                       className="p-1 active:scale-90"
                     >
                       <Ionicons name="trash-outline" size={18} color="#ef4444" />

@@ -12,6 +12,8 @@ import { updateWidgetData, getPendingLogs, clearPendingLogs, WaterWidgetModule }
 import * as SplashScreen from 'expo-splash-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef } from "react";
+import { ToastProvider } from "../components/Toast";
+
 
 // Keep native splash screen visible until our custom layout mounts
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -237,10 +239,12 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <RootContainer />
-        {!isSplashComplete && (
-          <AnimatedSplashScreen onAnimationEnd={() => setIsSplashComplete(true)} />
-        )}
+        <ToastProvider>
+          <RootContainer />
+          {!isSplashComplete && (
+            <AnimatedSplashScreen onAnimationEnd={() => setIsSplashComplete(true)} />
+          )}
+        </ToastProvider>
       </PersistGate>
     </Provider>
   );

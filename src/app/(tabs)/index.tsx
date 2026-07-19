@@ -22,6 +22,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
 import { addReminder, removeReminder, toggleReminderState } from '../../store/slices/remindersSlice';
 import { cancelReminderNotification, scheduleDailyReminder } from '../../utils/notifications';
+import { useToast } from '../../components/Toast';
+
 
 // Reusable Snapping Scroll Picker (Mimics iOS Native Wheel Picker with Infinite Loop)
 interface ScrollPickerProps {
@@ -131,6 +133,8 @@ export default function DashboardScreen() {
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { showToast } = useToast();
+
   
   // Fetch data from Redux
   const todayIntake = useAppSelector((state) => state.hydration.todayIntake);
@@ -230,6 +234,10 @@ export default function DashboardScreen() {
       notificationId
     }));
     setShowTimePicker(false);
+    showToast({
+      message: `Reminder set for ${timeStr} ⏰`,
+      type: 'success',
+    });
   };
 
   const handlePresetAdd = (hoursOffset: number) => {
@@ -252,10 +260,16 @@ export default function DashboardScreen() {
 
   const deleteReminder = async (id: string) => {
     const reminder = reminders.find(r => r.id === id);
-    if (reminder && reminder.notificationId) {
-      await cancelReminderNotification(reminder.notificationId);
+    if (reminder) {
+      if (reminder.notificationId) {
+        await cancelReminderNotification(reminder.notificationId);
+      }
+      dispatch(removeReminder(id));
+      showToast({
+        message: `Reminder for ${reminder.time} deleted`,
+        type: 'info',
+      });
     }
-    dispatch(removeReminder(id));
   };
 
   const rotate1 = wave1Anim.interpolate({
