@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
+
 
 export type ToastType = 'success' | 'info' | 'warning' | 'danger';
 
@@ -93,6 +95,21 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         friction: 9,
       }),
     ]).start();
+
+    // Trigger haptic feedback depending on the toast type
+    try {
+      if (type === 'success') {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      } else if (type === 'danger') {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+      } else if (type === 'warning') {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning).catch(() => {});
+      } else {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('Haptic feedback is not available:', e);
+    }
 
     // Auto dismiss
     timeoutRef.current = setTimeout(() => {
