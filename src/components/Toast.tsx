@@ -10,6 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { colors } from '../theme';
 
 
 export type ToastType = 'success' | 'info' | 'warning' | 'danger';
@@ -117,41 +118,41 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, duration);
   }, [insets.top, opacityAnim, scaleAnim, slideAnim, dismissToast]);
 
-  // Determine styles/icons based on type
+  // Determine styles/icons based on type — SketchPad aesthetic
   const getToastConfig = (type: ToastType) => {
     switch (type) {
       case 'success':
         return {
           icon: 'checkmark-circle' as const,
-          iconColor: '#00e5ff',
-          bgColor: '#002f36', // Premium deep slate-teal
-          textColor: '#e0f7fa',
-          borderColor: 'rgba(0, 229, 255, 0.25)',
+          iconColor: colors.teal,
+          bgColor: colors.creamLight,
+          textColor: colors.charcoal,
+          borderColor: colors.charcoal,
         };
       case 'danger':
         return {
           icon: 'alert-circle' as const,
-          iconColor: '#ff5252',
-          bgColor: '#2a0b0b', // Deep dark red
-          textColor: '#ffebee',
-          borderColor: 'rgba(255, 82, 82, 0.25)',
+          iconColor: colors.danger,
+          bgColor: colors.creamLight,
+          textColor: colors.charcoal,
+          borderColor: colors.charcoal,
         };
       case 'warning':
         return {
           icon: 'warning' as const,
-          iconColor: '#ffd740',
-          bgColor: '#241c00', // Deep dark gold
-          textColor: '#fffde7',
-          borderColor: 'rgba(255, 215, 64, 0.25)',
+          iconColor: colors.warning,
+          bgColor: colors.creamLight,
+          textColor: colors.charcoal,
+          borderColor: colors.charcoal,
         };
       case 'info':
       default:
         return {
           icon: 'information-circle' as const,
-          iconColor: '#00e5ff',
-          bgColor: '#071619', // Darkest charcoal-teal
-          textColor: '#e0f7fa',
-          borderColor: 'rgba(0, 229, 255, 0.2)',
+          iconColor: colors.teal,
+          bgColor: colors.creamLight,
+          textColor: colors.charcoal,
+          borderColor: colors.charcoal,
         };
     }
   };
@@ -205,15 +206,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 20,
     right: 20,
-    borderRadius: 24,
-    borderWidth: 1.5,
+    borderRadius: 16,
+    borderWidth: 2.5,
     zIndex: 99999,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.25,
-        shadowRadius: 12,
+        shadowColor: colors.charcoal,
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 0,
       },
       android: {
         elevation: 10,

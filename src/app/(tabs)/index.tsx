@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
-  ImageBackground,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -13,16 +12,16 @@ import {
   Switch,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateWidgetData } from '../../../modules/water-widget';
+import { useToast } from '../../components/Toast';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { syncTodayIntake, updateStreak } from '../../store/slices/hydrationSlice';
 import { addReminder, removeReminder, toggleReminderState } from '../../store/slices/remindersSlice';
+import { colors, sketchButtonPrimary, sketchButtonSecondary, sketchCard, sketchCardInner, sketchPill } from '../../theme';
 import { cancelReminderNotification, scheduleDailyReminder } from '../../utils/notifications';
-import { useToast } from '../../components/Toast';
 
 
 
@@ -99,7 +98,7 @@ function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: Scrol
   };
 
   return (
-    <View style={{ height: containerHeight, width }} className="justify-center overflow-hidden">
+    <View style={{ height: containerHeight, width, justifyContent: 'center', overflow: 'hidden' }}>
       <ScrollView
         ref={scrollViewRef}
         showsVerticalScrollIndicator={false}
@@ -114,13 +113,16 @@ function ScrollPicker({ items, selectedValue, onValueChange, width = 70 }: Scrol
         {paddedItems.map((item, idx) => (
           <View 
             key={idx} 
-            style={{ height: itemHeight }} 
-            className="justify-center items-center"
+            style={{ height: itemHeight, justifyContent: 'center', alignItems: 'center' }}
           >
             <Text 
-              className={`text-2xl font-bold tracking-wider ${
-                item === selectedValue ? 'text-[#001f24] scale-110' : 'text-[#8a9cae]/40'
-              }`}
+              style={{
+                fontSize: 24,
+                fontWeight: '700',
+                letterSpacing: 1,
+                color: item === selectedValue ? colors.charcoal : colors.mutedLight,
+                transform: [{ scale: item === selectedValue ? 1.1 : 1 }],
+              }}
             >
               {item}
             </Text>
@@ -289,34 +291,54 @@ export default function DashboardScreen() {
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-[#F7F9FB]"
-      style={{ paddingTop: insets.top }}
+      style={{ flex: 1, backgroundColor: colors.cream, paddingTop: insets.top }}
     >
       <StatusBar barStyle="dark-content" />
       
       {/* Top Header */}
-      <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="water-outline" size={24} color="#006875" />
-          <Text className="text-xl font-bold text-[#006875] tracking-tight">Sip Habit</Text>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        borderBottomWidth: 2.5,
+        borderBottomColor: colors.charcoal,
+        backgroundColor: colors.cream,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Ionicons name="water-outline" size={24} color={colors.teal} />
+          <Text style={{ fontSize: 22, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>Sip Habit</Text>
         </View>
       </View>
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-        className="px-5 pt-6"
+        contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 24 }}
       >
         {/* Visual Tracker Circle */}
-        <View className="items-center my-4">
+        <View style={{ alignItems: 'center', marginVertical: 16 }}>
           <View 
-            className="w-72 h-72 rounded-full border border-white/50 bg-[#e6e8ea]/20 relative items-center justify-center overflow-hidden"
             style={{
-              shadowColor: '#00e5ff',
-              shadowOffset: { width: 0, height: 10 },
-              shadowOpacity: 0.1,
-              shadowRadius: 20,
-              elevation: 10,
+              width: 280,
+              height: 280,
+              borderRadius: 140,
+              borderWidth: 3,
+              borderColor: colors.charcoal,
+              backgroundColor: colors.creamLight,
+              position: 'relative',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+              ...Platform.select({
+                ios: {
+                  shadowColor: colors.charcoal,
+                  shadowOffset: { width: 5, height: 5 },
+                  shadowOpacity: 0.35,
+                  shadowRadius: 0,
+                },
+                android: { elevation: 8 },
+              }),
             }}
           >
             
@@ -328,7 +350,7 @@ export default function DashboardScreen() {
                 bottom: 0,
                 left: '-30%',
                 transform: [{ rotate: rotate2 }],
-                backgroundColor: 'rgba(0, 229, 255, 0.25)',
+                backgroundColor: colors.tealSoft,
               }}
             />
             
@@ -340,48 +362,50 @@ export default function DashboardScreen() {
                 bottom: 0,
                 left: '-30%',
                 transform: [{ rotate: rotate1 }],
-                backgroundColor: '#3a9fa9',
+                backgroundColor: colors.teal,
               }}
             />
 
             <View 
-              className="z-10 items-center justify-center bg-white/75 w-[84%] h-[84%] rounded-full border border-white/90"
               style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                elevation: 3,
+                zIndex: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(245, 240, 232, 0.85)',
+                width: '82%',
+                height: '82%',
+                borderRadius: 120,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
               }}
             >
-              <Text className="text-[10px] font-bold text-[#00626e] tracking-wider uppercase mb-1">
+              <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
                 CURRENTLY AT
               </Text>
-              <Text className="text-5xl font-extrabold text-[#001f24] tracking-tight">
+              <Text style={{ fontSize: 48, fontWeight: '900', color: colors.charcoal, letterSpacing: -1 }}>
                 {percentage}%
               </Text>
-              <Text className="text-xs text-[#00626e]/80 mt-1 font-semibold">
+              <Text style={{ fontSize: 12, color: colors.muted, marginTop: 4, fontWeight: '700' }}>
                 {todayIntake} / {dailyGoal}ml
               </Text>
             </View>
           </View>
 
-          <View className="mt-6 items-center px-4">
-            <Text className="text-xl font-bold text-[#191c1e] mb-1">
+          <View style={{ marginTop: 24, alignItems: 'center', paddingHorizontal: 16 }}>
+            <Text style={{ fontSize: 20, fontWeight: '800', color: colors.charcoal, marginBottom: 4 }}>
               {percentage >= 100 ? 'Goal Achieved! 🎉' : 'Stay Refreshed!'}
             </Text>
-            <Text className="text-sm text-[#3b494c] text-center max-w-[280px]">
+            <Text style={{ fontSize: 13, color: colors.muted, textAlign: 'center', maxWidth: 280 }}>
               {percentage >= 100 
                 ? `Outstanding! You met your goal of ${dailyGoal}ml today.` 
                 : `You're doing great. Just ${remaining}ml left to reach your daily goal.`}
             </Text>
             {streak > 0 && (
               <View 
-                className="flex-row items-center gap-1 mt-2 bg-[#d5e3ff] px-3 py-1 rounded-full border"
-                style={{ borderColor: 'rgba(0, 104, 117, 0.1)' }}
+                style={[sketchPill, { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 10 }]}
               >
-                <Ionicons name="flame" size={14} color="#006875" />
-                <Text className="text-xs font-bold text-[#006875]">
+                <Ionicons name="flame" size={14} color={colors.charcoal} />
+                <Text style={{ fontSize: 11, fontWeight: '800', color: colors.charcoal }}>
                   {streak} DAY STREAK
                 </Text>
               </View>
@@ -390,101 +414,95 @@ export default function DashboardScreen() {
         </View>
 
         {/* Navigation Call-To-Action */}
-        <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
-        >
-          <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-2">
+        <View style={[sketchCard, { padding: 20, marginBottom: 20 }]}>
+          <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
             TRACK INTAKE
           </Text>
-          <Text className="text-xs text-[#3b494c] mb-4 leading-normal">
+          <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 16, lineHeight: 18 }}>
             Ready to log what you drank? Choose container presets or enter custom amounts.
           </Text>
           <TouchableOpacity 
             onPress={() => router.push('/log')}
-            className="bg-[#006875] flex-row items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-95"
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
+            style={[sketchButtonPrimary, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14 }]}
+            activeOpacity={0.8}
           >
-            <Ionicons name="add" size={20} color="white" />
-            <Text className="text-sm font-bold text-white uppercase tracking-wider">Log Intake Screen</Text>
+            <Ionicons name="add" size={20} color={colors.charcoal} />
+            <Text style={{ fontSize: 13, fontWeight: '800', color: colors.charcoal, textTransform: 'uppercase', letterSpacing: 1 }}>Log Intake Screen</Text>
           </TouchableOpacity>
         </View>
 
         {/* Reminders Bento Card (Multiple Reminders) */}
-        <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
-        >
-          <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase">
+        <View style={[sketchCard, { padding: 20, marginBottom: 20 }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase' }}>
               DAILY REMINDERS
             </Text>
             <TouchableOpacity 
               onPress={openTimePicker}
-              className="w-7 h-7 rounded-full items-center justify-center active:scale-95"
-              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 14,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.salmonLight,
+                borderWidth: 1.5,
+                borderColor: colors.charcoal,
+              }}
+              activeOpacity={0.8}
             >
-              <Ionicons name="add" size={18} color="#006875" />
+              <Ionicons name="add" size={18} color={colors.charcoal} />
             </TouchableOpacity>
           </View>
 
           {/* Reminders List */}
-          <View style={{ gap: 6 }}>
+          <View style={{ gap: 8 }}>
             {reminders.map((reminder) => (
               <View 
                 key={reminder.id}
-                className="flex-row items-center justify-between p-3 rounded-2xl bg-[#F7F9FB] border border-[#eceef0]"
+                style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 12 }]}
               >
-                <View className="flex-row items-center gap-3">
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                   <View 
-                    className="w-9 h-9 rounded-xl items-center justify-center"
                     style={{
-                      backgroundColor: reminder.enabled ? 'rgba(0, 229, 255, 0.2)' : '#e5e7eb',
+                      width: 36,
+                      height: 36,
+                      borderRadius: 12,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: reminder.enabled ? colors.tealSoft : colors.creamDark,
+                      borderWidth: 1.5,
+                      borderColor: reminder.enabled ? colors.teal : colors.mutedLight,
                     }}
                   >
                     <Ionicons 
                       name="alarm" 
                       size={18} 
-                      color={reminder.enabled ? '#006875' : '#8a9cae'} 
+                      color={reminder.enabled ? colors.teal : colors.mutedLight} 
                     />
                   </View>
-                  <Text className={`text-sm font-bold ${
-                    reminder.enabled ? 'text-[#191c1e]' : 'text-[#8a9cae] line-through'
-                  }`}>
+                  <Text style={{
+                    fontSize: 14,
+                    fontWeight: '700',
+                    color: reminder.enabled ? colors.charcoal : colors.mutedLight,
+                    textDecorationLine: reminder.enabled ? 'none' : 'line-through',
+                  }}>
                     {reminder.time}
                   </Text>
                 </View>
 
-                <View className="flex-row items-center gap-3">
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                   <Switch
                     value={reminder.enabled}
                     onValueChange={() => toggleReminder(reminder.id)}
-                    trackColor={{ false: '#d1d5db', true: '#9cf0ff' }}
-                    thumbColor={reminder.enabled ? '#006875' : '#f4f3f4'}
+                    trackColor={{ false: colors.creamDark, true: colors.salmonLight }}
+                    thumbColor={reminder.enabled ? colors.charcoal : colors.mutedLight}
                   />
                   <TouchableOpacity 
                     onPress={() => deleteReminder(reminder.id)}
-                    className="p-1"
+                    style={{ padding: 4 }}
                   >
-                    <Ionicons name="trash-outline" size={16} color="#ef4444" />
+                    <Ionicons name="trash-outline" size={16} color={colors.danger} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -494,27 +512,17 @@ export default function DashboardScreen() {
 
         {/* Hydration Tip Card */}
         <View 
-          className="rounded-3xl overflow-hidden h-40"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={[sketchCard, { padding: 20, position: 'relative', overflow: 'hidden' }]}
         >
-          <ImageBackground
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8IQasSEfxUZM8fElXgFTQr39jl9jNf2c1hSDSc93mGwr1owkSVmkUj2sHZywcVGBIe4cQ7nuHR0wa2dex0W8GnHiXVfFdo1epAoDchPP4ZRFx6QdDEfdKtPUpwcDSzihFHZF6QHZDTac0b-OlEJ8JUqtgKTGZJsRspT11t858pX4YAww43kMbI88nlW-XJpZoVKKSVj5_1Pv-32TMYFW0NZLi7FkWwfk0kS8VZlPdqm6Vj1j5lkICzZEpddnpQwQ2fuj_SUpjj2c' }}
-            className="w-full h-full justify-end"
-          >
-            <View className="absolute inset-0 bg-black/45" />
-            <View className="p-5 z-10">
-              <Text className="text-[10px] font-bold text-white/70 tracking-wider uppercase mb-1">DAILY TIP</Text>
-              <Text className="text-sm font-semibold text-white leading-snug">
-                Adding a slice of lemon can improve digestion and flavor.
-              </Text>
-            </View>
-          </ImageBackground>
+          <View style={{ zIndex: 10 }}>
+            <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>DAILY TIP</Text>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: colors.charcoal, lineHeight: 22 }}>
+              Adding a slice of lemon can improve digestion and flavor.
+            </Text>
+          </View>
+          <View style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.06 }}>
+            <Ionicons name="water" size={100} color={colors.charcoal} />
+          </View>
         </View>
       </ScrollView>
 
@@ -525,85 +533,86 @@ export default function DashboardScreen() {
         animationType="slide"
         onRequestClose={() => setShowTimePicker(false)}
       >
-        <View className="flex-1 justify-end items-center px-5 pb-6">
-          {/* Backdrop absolute backdrop sibling */}
+        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 150 }}>
+          {/* Backdrop */}
           <TouchableOpacity 
             activeOpacity={1}
             onPress={() => setShowTimePicker(false)}
-            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.55)' }}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(45, 52, 54, 0.55)' }}
           />
 
           <View 
-            className="bg-white w-full rounded-[32px] p-6 border border-[#eceef0] items-center pb-8 z-10"
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.3,
-              shadowRadius: 16,
-              elevation: 16,
-            }}
+            style={[sketchCard, { width: '100%', padding: 24, alignItems: 'center', paddingBottom: 32, zIndex: 10, borderRadius: 24 }]}
           >
             
             {/* Drag handle decorator */}
-            <View className="w-10 h-1 bg-gray-200 rounded-full mb-5" />
+            <View style={{ width: 40, height: 4, backgroundColor: colors.mutedLight, borderRadius: 2, marginBottom: 10 }} />
 
-            <Text className="text-xl font-bold text-[#191c1e] mb-5 self-start">
+            <Text style={{ fontSize: 20, fontWeight: '800', color: colors.charcoal, marginBottom: 20, alignSelf: 'flex-start' }}>
               Set Reminder
             </Text>
 
             {/* Preset Options pills */}
-            <View className="flex-row gap-2 mb-6 w-full justify-between">
+            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 24, width: '100%', justifyContent: 'space-between' }}>
               <TouchableOpacity 
                 onPress={() => setShowTimePicker(false)}
-                className="flex-1 py-3 px-1 bg-white border border-[#eceef0] rounded-2xl items-center active:scale-95"
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, paddingHorizontal: 4, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-semibold text-[#5c6f84]">No Reminder</Text>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: colors.muted }}>No Reminder</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 onPress={() => handlePresetAdd(1)}
-                className="flex-1 py-3 px-1 bg-[#F2F3F5] rounded-2xl items-center active:scale-95"
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, paddingHorizontal: 4, alignItems: 'center', backgroundColor: colors.cream }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-semibold text-[#006875]">In an Hour</Text>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: colors.teal }}>In an Hour</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 onPress={() => handlePresetAdd(2)}
-                className="flex-1 py-3 px-1 bg-[#F2F3F5] rounded-2xl items-center active:scale-95"
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, paddingHorizontal: 4, alignItems: 'center', backgroundColor: colors.cream }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-semibold text-[#006875]">In Two Hours</Text>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: colors.teal }}>In Two Hours</Text>
               </TouchableOpacity>
             </View>
 
             {/* iOS-Style Snapping Wheel Area */}
-            <View className="flex-row items-center justify-center bg-[#F2F3F5] border border-[#eceef0] rounded-3xl w-full h-[150px] mb-8 relative">
+            <View style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', height: 150, marginBottom: 32, position: 'relative' }]}>
               
               {/* Highlight center bar indicator overlay */}
               <View 
-                style={{ height: 50, top: 50, borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'rgba(0, 104, 117, 0.15)' }}
-                className="absolute left-4 right-4 pointer-events-none"
+                style={{ height: 50, top: 50, borderTopWidth: 1.5, borderBottomWidth: 1.5, borderColor: colors.borderLight, position: 'absolute', left: 16, right: 16 }}
               />
 
               {/* Left scale ruler ticks */}
-              <View className="absolute left-4 top-0 bottom-0 justify-between py-4 w-5 pointer-events-none">
+              <View style={{ position: 'absolute', left: 16, top: 0, bottom: 0, justifyContent: 'space-between', paddingVertical: 16, width: 20 }}>
                 {Array.from({ length: 9 }).map((_, i) => (
                   <View 
                     key={i} 
-                    className={`h-[1px] ${
-                      i === 4 ? 'w-5 bg-[#006875] h-[1.5px]' : i % 2 === 0 ? 'w-3 bg-[#8a9cae]/35' : 'w-1.5 bg-[#8a9cae]/20'
-                    }`} 
+                    style={{
+                      height: i === 4 ? 2 : 1,
+                      width: i === 4 ? 20 : (i % 2 === 0 ? 12 : 6),
+                      backgroundColor: i === 4 ? colors.teal : colors.mutedLight,
+                      opacity: i === 4 ? 1 : 0.4,
+                    }}
                   />
                 ))}
               </View>
 
               {/* Right scale ruler ticks */}
-              <View className="absolute right-4 top-0 bottom-0 justify-between py-4 w-5 pointer-events-none">
+              <View style={{ position: 'absolute', right: 16, top: 0, bottom: 0, justifyContent: 'space-between', paddingVertical: 16, width: 20 }}>
                 {Array.from({ length: 9 }).map((_, i) => (
                   <View 
                     key={i} 
-                    className={`h-[1px] ${
-                      i === 4 ? 'w-5 bg-[#006875] h-[1.5px]' : i % 2 === 0 ? 'w-3 bg-[#8a9cae]/35' : 'w-1.5 bg-[#8a9cae]/20'
-                    }`} 
+                    style={{
+                      height: i === 4 ? 2 : 1,
+                      width: i === 4 ? 20 : (i % 2 === 0 ? 12 : 6),
+                      backgroundColor: i === 4 ? colors.teal : colors.mutedLight,
+                      opacity: i === 4 ? 1 : 0.4,
+                    }}
                   />
                 ))}
               </View>
@@ -616,7 +625,7 @@ export default function DashboardScreen() {
                 width={80}
               />
 
-              <Text className="text-3xl font-light text-[#8a9cae]/60 mx-6 -mt-1">:</Text>
+              <Text style={{ fontSize: 28, fontWeight: '300', color: colors.mutedLight, marginHorizontal: 24, marginTop: -4 }}>:</Text>
 
               {/* Scrollable Minutes Wheel */}
               <ScrollPicker 
@@ -629,20 +638,21 @@ export default function DashboardScreen() {
             </View>
 
             {/* Actions Buttons */}
-            <View className="flex-row gap-3 w-full">
+            <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
               <TouchableOpacity 
                 onPress={() => setShowTimePicker(false)}
-                className="flex-1 py-3.5 bg-white border border-[#eceef0] rounded-2xl items-center active:scale-95"
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 14, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-sm font-bold text-[#5c6f84]">Cancel</Text>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: colors.muted }}>Cancel</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 onPress={handleAddReminder}
-                className="flex-[1.5] py-3.5 rounded-2xl items-center active:scale-95"
-                style={{ backgroundColor: '#00c5ff' }}
+                style={[sketchButtonPrimary, { flex: 1.5, paddingVertical: 14, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-sm font-bold text-white">Done</Text>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: colors.charcoal }}>Done</Text>
               </TouchableOpacity>
             </View>
 

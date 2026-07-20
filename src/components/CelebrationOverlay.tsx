@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { colors, sketchButtonPrimary } from '../theme';
 
 interface CelebrationOverlayProps {
   streak: number;
@@ -28,29 +29,15 @@ interface Particle {
 }
 
 const CONFETTI_COLORS = [
-  '#FFC107', // Amber Gold
-  '#FF5722', // Deep Orange
-  '#E91E63', // Pink
-  '#00BCD4', // Cyan
-  '#4CAF50', // Green
-  '#9C27B0', // Purple
-  '#FFEB3B', // Yellow
-  '#03A9F4', // Light Blue
+  '#E8C4B8', // Salmon
+  '#D4A494', // Warm coral / peach
+  '#F0D5CB', // Light peach
+  '#E67E22', // Warm orange
+  '#F0D5CB', // Light salmon
+  '#2D3436', // Charcoal
+  '#C0392B', // Warm red
+  '#27AE60', // Green
 ];
-
-// Standard teal app colors
-const colors = {
-  card: '#FFFFFF',
-  border: '#ECEEF0',
-  accent: '#006875',
-  textPrimary: '#191C1E',
-  textSecondary: '#3B494C',
-  background: '#F7F9FB',
-  tabActiveBg: '#D5E3FF',
-  buttonBackground: '#006875',
-  buttonText: '#FFFFFF',
-};
-const isDark = false;
 
 export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
   streak,
@@ -244,8 +231,6 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
         style={[
           styles.card,
           {
-            backgroundColor: colors.card,
-            borderColor: colors.border,
             transform: [{ scale: cardScale }],
             opacity: cardOpacity,
           },
@@ -256,44 +241,41 @@ export const CelebrationOverlay: React.FC<CelebrationOverlayProps> = ({
           style={[
             styles.badgeBg,
             { 
-              backgroundColor: colors.tabActiveBg,
               transform: [{ scale: flameScale }],
             }
           ]}
         >
-          <Ionicons name="flame" size={54} color={isDark ? '#FF9100' : '#006875'} />
+          <Ionicons name="flame" size={54} color={colors.charcoal} />
         </Animated.View>
 
-        <Text style={[styles.title, { color: colors.accent }]}>
+        <Text style={styles.title}>
           GOAL MET! 🎉
         </Text>
 
-        <Text style={[styles.subtitle, { color: colors.textPrimary }]}>
+        <Text style={styles.subtitle}>
           Streak Extended!
         </Text>
 
         {/* Large Counter Box */}
-        <View 
-          style={[styles.counterBox, { backgroundColor: colors.background, borderColor: colors.border }]}
-        >
-          <Text style={[styles.counterText, { color: colors.textPrimary }]}>
+        <View style={styles.counterBox}>
+          <Text style={styles.counterText}>
             {streak}
           </Text>
-          <Text style={[styles.counterLabel, { color: colors.accent }]}>
+          <Text style={styles.counterLabel}>
             DAY STREAK
           </Text>
         </View>
 
-        <Text style={[styles.message, { color: colors.textSecondary }]}>
-          Phenomenal job! You reached your goal of <Text style={{ fontWeight: '800', color: colors.textPrimary }}>{dailyGoal}ml</Text> today. Keep up the consistent sips to stay healthy!
+        <Text style={styles.message}>
+          Phenomenal job! You reached your goal of <Text style={{ fontWeight: '900', color: colors.charcoal }}>{dailyGoal}ml</Text> today. Keep up the consistent sips to stay healthy!
         </Text>
 
         <TouchableOpacity
           onPress={handleClose}
-          style={[styles.button, { backgroundColor: colors.buttonBackground }]}
+          style={styles.button}
           activeOpacity={0.8}
         >
-          <Text style={[styles.buttonText, { color: colors.buttonText }]}>
+          <Text style={styles.buttonText}>
             AMAZING!
           </Text>
         </TouchableOpacity>
@@ -313,7 +295,7 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(0, 0, 0, 0.72)',
+    backgroundColor: 'rgba(45, 52, 54, 0.72)',
   },
   confetti: {
     position: 'absolute',
@@ -326,17 +308,19 @@ const styles = StyleSheet.create({
   card: {
     width: width * 0.85,
     maxWidth: 340,
-    borderRadius: 32,
-    borderWidth: 1.5,
+    borderRadius: 24,
+    borderWidth: 3,
+    borderColor: colors.charcoal,
+    backgroundColor: colors.creamLight,
     padding: 24,
     alignItems: 'center',
     zIndex: 100000,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 12 },
-        shadowOpacity: 0.35,
-        shadowRadius: 16,
+        shadowColor: colors.charcoal,
+        shadowOffset: { width: 5, height: 5 },
+        shadowOpacity: 0.4,
+        shadowRadius: 0,
       },
       android: {
         elevation: 16,
@@ -350,6 +334,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+    backgroundColor: colors.salmonLight,
+    borderWidth: 2.5,
+    borderColor: colors.charcoal,
   },
   title: {
     fontSize: 14,
@@ -357,6 +344,7 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
     marginBottom: 4,
     textAlign: 'center',
+    color: colors.teal,
   },
   subtitle: {
     fontSize: 22,
@@ -364,26 +352,42 @@ const styles = StyleSheet.create({
     letterSpacing: 0.25,
     marginBottom: 20,
     textAlign: 'center',
+    color: colors.charcoal,
   },
   counterBox: {
     paddingVertical: 14,
     paddingHorizontal: 28,
-    borderRadius: 24,
-    borderWidth: 1,
+    borderRadius: 18,
+    borderWidth: 2.5,
+    borderColor: colors.charcoal,
+    backgroundColor: colors.cream,
     alignItems: 'center',
     marginBottom: 20,
     minWidth: 140,
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.charcoal,
+        shadowOffset: { width: 3, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 0,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   counterText: {
     fontSize: 48,
     fontWeight: '900',
     lineHeight: 52,
+    color: colors.charcoal,
   },
   counterLabel: {
     fontSize: 9,
     fontWeight: '800',
     letterSpacing: 2,
     marginTop: 2,
+    color: colors.teal,
   },
   message: {
     fontSize: 13,
@@ -391,22 +395,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
     paddingHorizontal: 6,
+    color: colors.muted,
   },
   button: {
     width: '100%',
     height: 52,
-    borderRadius: 20,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.salmon,
+    borderWidth: 2.5,
+    borderColor: colors.charcoal,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 4,
+        shadowColor: colors.charcoal,
+        shadowOffset: { width: 3, height: 3 },
+        shadowOpacity: 0.4,
+        shadowRadius: 0,
       },
       android: {
-        elevation: 4,
+        elevation: 5,
       },
     }),
   },
@@ -414,5 +422,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '800',
     letterSpacing: 1.5,
+    color: colors.charcoal,
   },
 });

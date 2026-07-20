@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addDrink, removeDrink } from '../../store/slices/hydrationSlice';
 import { useToast } from '../../components/Toast';
+import { colors, sketchCard, sketchCardInner, sketchButtonPrimary, sketchButtonSecondary } from '../../theme';
 
 export default function LogScreen() {
   const dispatch = useAppDispatch();
@@ -85,254 +86,224 @@ export default function LogScreen() {
     }
   };
 
+  const getContainerIcon = (type: string): keyof typeof Ionicons.glyphMap => {
+    switch (type) {
+      case 'cup': return 'cafe-outline';
+      case 'bottle': return 'water-outline';
+      case 'large': return 'beer-outline';
+      default: return 'create-outline';
+    }
+  };
+
+  const containers = [
+    { key: 'cup' as const, label: 'Cup', amount: 250, icon: 'cafe-outline' as const },
+    { key: 'bottle' as const, label: 'Bottle', amount: 500, icon: 'water-outline' as const },
+    { key: 'large' as const, label: 'Large', amount: 1000, icon: 'beer-outline' as const },
+    { key: 'custom' as const, label: 'Custom', amount: selectedAmount, icon: 'create-outline' as const },
+  ];
+
   return (
     <View 
-      className="flex-1 bg-[#F7F9FB]"
-      style={{ paddingTop: insets.top }}
+      style={{ flex: 1, backgroundColor: colors.cream, paddingTop: insets.top }}
     >
       <StatusBar barStyle="dark-content" />
 
       {/* Top Header */}
-      <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="water-outline" size={24} color="#006875" />
-          <Text className="text-xl font-bold text-[#006875] tracking-tight">Sip Habit</Text>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        borderBottomWidth: 2.5,
+        borderBottomColor: colors.charcoal,
+        backgroundColor: colors.cream,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Ionicons name="water-outline" size={24} color={colors.teal} />
+          <Text style={{ fontSize: 22, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>Sip Habit</Text>
         </View>
       </View>
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-        className="px-5 pt-6"
+        contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 24 }}
       >
         {/* Section Header */}
-        <View className="mb-6">
-          <Text className="text-2xl font-bold text-[#191c1e] mb-1">Log Intake</Text>
-          <Text className="text-sm text-[#3b494c]">Select your container size to record your hydration.</Text>
+        <View style={{ marginBottom: 24 }}>
+          <Text style={{ fontSize: 26, fontWeight: '800', color: colors.charcoal, marginBottom: 4, letterSpacing: -0.5 }}>Log Intake</Text>
+          <Text style={{ fontSize: 13, color: colors.muted, fontWeight: '500' }}>Select your container size to record your hydration.</Text>
         </View>
 
         {/* Container Bento Grid */}
-        <View className="flex-row flex-wrap gap-4 mb-6">
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginBottom: 24 }}>
           
-          {/* Cup */}
-          <TouchableOpacity 
-            onPress={() => {
-              setSelectedContainer('cup');
-              setSelectedAmount(250);
-            }}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
-              selectedContainer === 'cup' 
-                ? 'border-[#006875]' 
-                : 'border-[#eceef0]'
-            }`}
-            style={{
-              backgroundColor: selectedContainer === 'cup' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
-          >
-            <View 
-              className="w-14 h-14 rounded-full items-center justify-center mb-3"
-              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-            >
-              <Ionicons name="cafe-outline" size={28} color="#006875" />
-            </View>
-            <Text className="text-base font-bold text-[#006875]">Cup</Text>
-            <Text className="text-[10px] font-bold text-[#3b494c] uppercase tracking-wider mt-0.5">250ml</Text>
-          </TouchableOpacity>
-
-          {/* Bottle */}
-          <TouchableOpacity 
-            onPress={() => {
-              setSelectedContainer('bottle');
-              setSelectedAmount(500);
-            }}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
-              selectedContainer === 'bottle' 
-                ? 'border-[#006875]' 
-                : 'border-[#eceef0]'
-            }`}
-            style={{
-              backgroundColor: selectedContainer === 'bottle' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
-          >
-            <View 
-              className="w-14 h-14 rounded-full items-center justify-center mb-3"
-              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-            >
-              <Ionicons name="water-outline" size={28} color="#006875" />
-            </View>
-            <Text className="text-base font-bold text-[#006875]">Bottle</Text>
-            <Text className="text-[10px] font-bold text-[#3b494c] uppercase tracking-wider mt-0.5">500ml</Text>
-          </TouchableOpacity>
-
-          {/* Large */}
-          <TouchableOpacity 
-            onPress={() => {
-              setSelectedContainer('large');
-              setSelectedAmount(1000);
-            }}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
-              selectedContainer === 'large' 
-                ? 'border-[#006875]' 
-                : 'border-[#eceef0]'
-            }`}
-            style={{
-              backgroundColor: selectedContainer === 'large' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
-          >
-            <View 
-              className="w-14 h-14 rounded-full items-center justify-center mb-3"
-              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-            >
-              <Ionicons name="beer-outline" size={28} color="#006875" />
-            </View>
-            <Text className="text-base font-bold text-[#006875]">Large</Text>
-            <Text className="text-[10px] font-bold text-[#3b494c] uppercase tracking-wider mt-0.5">1000ml</Text>
-          </TouchableOpacity>
-
-          {/* Custom */}
-          <TouchableOpacity 
-            onPress={() => setShowCustomModal(true)}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
-              selectedContainer === 'custom' 
-                ? 'border-[#006875]' 
-                : 'border-[#eceef0]'
-            }`}
-            style={{
-              backgroundColor: selectedContainer === 'custom' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
-          >
-            <View 
-              className="w-14 h-14 rounded-full items-center justify-center mb-3"
-              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-            >
-              <Ionicons name="create-outline" size={28} color="#006875" />
-            </View>
-            <Text className="text-base font-bold text-[#006875]">Custom</Text>
-            <Text className="text-[10px] font-bold text-[#3b494c] uppercase tracking-wider mt-0.5">
-              {selectedContainer === 'custom' ? `${selectedAmount}ml` : 'Set ml'}
-            </Text>
-          </TouchableOpacity>
+          {containers.map((container) => {
+            const isSelected = selectedContainer === container.key;
+            return (
+              <TouchableOpacity 
+                key={container.key}
+                onPress={() => {
+                  if (container.key === 'custom') {
+                    setShowCustomModal(true);
+                  } else {
+                    setSelectedContainer(container.key);
+                    setSelectedAmount(container.amount);
+                  }
+                }}
+                style={[
+                  sketchCard,
+                  {
+                    width: '47%',
+                    padding: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isSelected ? colors.salmonLight : colors.creamLight,
+                    borderColor: colors.charcoal,
+                  },
+                ]}
+                activeOpacity={0.8}
+              >
+                <View 
+                  style={{
+                    width: 56,
+                    height: 56,
+                    borderRadius: 28,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 12,
+                    backgroundColor: isSelected ? colors.salmon : colors.cream,
+                    borderWidth: 1.5,
+                    borderColor: colors.charcoal,
+                  }}
+                >
+                  <Ionicons name={container.icon} size={28} color={colors.charcoal} />
+                </View>
+                <Text style={{ fontSize: 15, fontWeight: '800', color: colors.charcoal }}>{container.label}</Text>
+                <Text style={{ fontSize: 10, fontWeight: '700', color: colors.muted, textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>
+                  {container.key === 'custom' 
+                    ? (selectedContainer === 'custom' ? `${selectedAmount}ml` : 'Set ml') 
+                    : `${container.amount}ml`
+                  }
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
 
         </View>
 
         {/* Quick Adjust Control */}
         <View 
-          className="flex-row items-center justify-between bg-white border border-[#eceef0] rounded-full px-5 py-3 mb-4"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12, marginBottom: 14 }]}
         >
-          <Text className="text-sm font-semibold text-[#3b494c]">Quick Adjust:</Text>
-          <View className="flex-row gap-2">
+          <Text style={{ fontSize: 13, fontWeight: '700', color: colors.muted }}>Quick Adjust:</Text>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
             <TouchableOpacity 
               onPress={() => adjustVolume(-50)}
-              className="bg-[#F7F9FB] border border-[#eceef0] px-4 py-1.5 rounded-full active:scale-95"
+              style={{
+                backgroundColor: colors.cream,
+                borderColor: colors.charcoal,
+                borderWidth: 1.5,
+                paddingHorizontal: 14,
+                paddingVertical: 6,
+                borderRadius: 20,
+              }}
+              activeOpacity={0.8}
             >
-              <Text className="text-xs font-bold text-[#006875]">-50ml</Text>
+              <Text style={{ fontSize: 11, fontWeight: '800', color: colors.charcoal }}>-50ml</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
               onPress={() => adjustVolume(50)}
-              className="bg-[#F7F9FB] border border-[#eceef0] px-4 py-1.5 rounded-full active:scale-95"
+              style={{
+                backgroundColor: colors.cream,
+                borderColor: colors.charcoal,
+                borderWidth: 1.5,
+                paddingHorizontal: 14,
+                paddingVertical: 6,
+                borderRadius: 20,
+              }}
+              activeOpacity={0.8}
             >
-              <Text className="text-xs font-bold text-[#006875]">+50ml</Text>
+              <Text style={{ fontSize: 11, fontWeight: '800', color: colors.charcoal }}>+50ml</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Inline Add Water Button (Directly below Quick Adjust) */}
+        {/* Inline Add Water Button */}
         <TouchableOpacity 
           onPress={handleAddWater}
-          className="bg-[#006875] w-full h-14 rounded-full flex-row items-center justify-center gap-2 active:scale-95 mb-8"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
-          }}
+          style={[sketchButtonPrimary, {
+            width: '100%',
+            height: 56,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            marginBottom: 32,
+          }]}
+          activeOpacity={0.8}
         >
-          <Ionicons name="add" size={20} color="white" />
-          <Text className="text-base font-bold text-white uppercase tracking-wider">
+          <Ionicons name="add" size={20} color={colors.charcoal} />
+          <Text style={{ fontSize: 15, fontWeight: '800', color: colors.charcoal, textTransform: 'uppercase', letterSpacing: 1 }}>
             Add {selectedAmount}ml Water
           </Text>
         </TouchableOpacity>
 
         {/* Recent Logs Section */}
-        <View className="mb-6">
-          <View className="flex-row items-center justify-between mb-4">
-            <Text className="text-lg font-bold text-[#191c1e]">Today's Logs</Text>
-            <Text className="text-xs font-bold text-[#006875] uppercase tracking-wider">
-              Total: {todayIntake}ml
-            </Text>
+        <View style={{ marginBottom: 24 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <Text style={{ fontSize: 18, fontWeight: '800', color: colors.charcoal }}>Today's Logs</Text>
+            <View style={{
+              backgroundColor: colors.salmonLight,
+              borderColor: colors.charcoal,
+              borderWidth: 1.5,
+              borderRadius: 12,
+              paddingHorizontal: 10,
+              paddingVertical: 3,
+            }}>
+              <Text style={{ fontSize: 10, fontWeight: '800', color: colors.charcoal, textTransform: 'uppercase', letterSpacing: 1 }}>
+                Total: {todayIntake}ml
+              </Text>
+            </View>
           </View>
 
           {todayLogs.length === 0 ? (
             <View 
-              className="bg-white border border-[#eceef0] rounded-3xl p-8 items-center justify-center"
-              style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.05,
-                shadowRadius: 2,
-                elevation: 1,
-              }}
+              style={[sketchCard, { padding: 32, alignItems: 'center', justifyContent: 'center' }]}
             >
-              <Ionicons name="beer-outline" size={32} color="#8a9cae" style={{ opacity: 0.55, marginBottom: 8 }} />
-              <Text className="text-sm text-[#8a9cae] font-semibold text-center">No water logged today yet.</Text>
+              <Ionicons name="beer-outline" size={32} color={colors.mutedLight} style={{ marginBottom: 8 }} />
+              <Text style={{ fontSize: 13, color: colors.muted, fontWeight: '600', textAlign: 'center' }}>No water logged today yet.</Text>
             </View>
           ) : (
-            <View style={{gap:6}}>
+            <View style={{ gap: 8 }}>
               {todayLogs.map((log) => (
                 <View 
                   key={log.id}
-                  className="bg-white border border-[#eceef0] p-4 rounded-2xl flex-row items-center justify-between"
-                  style={{
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 1 },
-                    shadowOpacity: 0.05,
-                    shadowRadius: 2,
-                    elevation: 1,
-                  }}
+                  style={[sketchCardInner, { padding: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}
                 >
-                  <View className="flex-row items-center gap-4">
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
                     <View 
-                      className="w-10 h-10 rounded-full items-center justify-center"
-                      style={{ backgroundColor: 'rgba(0, 229, 255, 0.15)' }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: colors.tealSoft,
+                        borderWidth: 1.5,
+                        borderColor: colors.teal,
+                      }}
                     >
-                      <Ionicons name="water" size={18} color="#006875" />
+                      <Ionicons name="water" size={18} color={colors.teal} />
                     </View>
                     <View>
-                      <Text className="text-sm font-bold text-[#191c1e]">{getContainerLabel(log.containerType)}</Text>
-                      <Text className="text-xs text-[#8a9cae] font-medium mt-0.5">{formatTime(log.timestamp)}</Text>
+                      <Text style={{ fontSize: 13, fontWeight: '700', color: colors.charcoal }}>{getContainerLabel(log.containerType)}</Text>
+                      <Text style={{ fontSize: 11, color: colors.muted, fontWeight: '600', marginTop: 2 }}>{formatTime(log.timestamp)}</Text>
                     </View>
                   </View>
-                  <View className="flex-row items-center gap-4">
-                    <Text className="text-base font-bold text-[#006875]">{log.amount}ml</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '800', color: colors.teal }}>{log.amount}ml</Text>
                     <TouchableOpacity 
                       onPress={() => {
                         dispatch(removeDrink(log.id));
@@ -341,9 +312,10 @@ export default function LogScreen() {
                           type: 'info',
                         });
                       }}
-                      className="p-1 active:scale-90"
+                      style={{ padding: 4 }}
+                      activeOpacity={0.7}
                     >
-                      <Ionicons name="trash-outline" size={18} color="#ef4444" />
+                      <Ionicons name="trash-outline" size={18} color={colors.danger} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -363,20 +335,13 @@ export default function LogScreen() {
       >
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1 bg-black/50 justify-center items-center px-6"
+          style={{ flex: 1, backgroundColor: 'rgba(45, 52, 54, 0.55)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
         >
           <View 
-            className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] items-center"
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.3,
-              shadowRadius: 16,
-              elevation: 16,
-            }}
+            style={[sketchCard, { width: '100%', padding: 24, alignItems: 'center', borderRadius: 24 }]}
           >
             
-            <Text className="text-base font-bold text-[#006875] tracking-wide mb-6">
+            <Text style={{ fontSize: 15, fontWeight: '800', color: colors.charcoal, letterSpacing: 1, marginBottom: 24 }}>
               ENTER CUSTOM AMOUNT
             </Text>
 
@@ -385,25 +350,39 @@ export default function LogScreen() {
               onChangeText={setCustomInput}
               keyboardType="number-pad"
               placeholder="e.g. 350"
-              placeholderTextColor="#8a9cae"
+              placeholderTextColor={colors.mutedLight}
               autoFocus={true}
-              className="w-full text-center text-3xl font-extrabold text-[#001f24] py-3 bg-gray-50 rounded-2xl border border-gray-100 mb-6"
+              style={{
+                width: '100%',
+                textAlign: 'center',
+                fontSize: 28,
+                fontWeight: '900',
+                color: colors.charcoal,
+                paddingVertical: 12,
+                backgroundColor: colors.cream,
+                borderRadius: 16,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                marginBottom: 24,
+              }}
             />
 
             {/* Actions Buttons */}
-            <View className="flex-row gap-3 w-full">
+            <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
               <TouchableOpacity 
                 onPress={() => setShowCustomModal(false)}
-                className="flex-1 py-3 bg-[#eceef0] rounded-xl items-center"
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-bold text-[#3b494c]">CANCEL</Text>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.muted }}>CANCEL</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 onPress={handleCustomSubmit}
-                className="flex-1 py-3 bg-[#006875] rounded-xl items-center"
+                style={[sketchButtonPrimary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-bold text-white">SET VOLUME</Text>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.charcoal }}>SET VOLUME</Text>
               </TouchableOpacity>
             </View>
 

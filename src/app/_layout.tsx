@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef } from "react";
 import { ToastProvider } from "../components/Toast";
 import { CelebrationOverlay } from "../components/CelebrationOverlay";
+import { colors } from "../theme";
 
 
 // Keep native splash screen visible until our custom layout mounts
@@ -198,7 +199,7 @@ function AnimatedSplashScreen({ onAnimationEnd }: AnimatedSplashScreenProps) {
       style={[
         StyleSheet.absoluteFill,
         {
-          backgroundColor: '#006875',
+          backgroundColor: colors.cream,
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 9999,
@@ -206,7 +207,7 @@ function AnimatedSplashScreen({ onAnimationEnd }: AnimatedSplashScreenProps) {
         },
       ]}
     >
-      <View className="items-center justify-center relative w-full h-80">
+      <View style={{ alignItems: 'center', justifyContent: 'center', position: 'relative', width: '100%', height: 320 }}>
         {/* Ripple Ring */}
         <Animated.View
           style={{
@@ -214,8 +215,8 @@ function AnimatedSplashScreen({ onAnimationEnd }: AnimatedSplashScreenProps) {
             width: 80,
             height: 80,
             borderRadius: 40,
-            borderWidth: 2.5,
-            borderColor: 'rgba(0, 229, 255, 0.65)',
+            borderWidth: 3,
+            borderColor: colors.teal,
             transform: [{ scale: rippleScale }],
             opacity: rippleOpacity,
           }}
@@ -223,7 +224,7 @@ function AnimatedSplashScreen({ onAnimationEnd }: AnimatedSplashScreenProps) {
 
         {/* Falling Droplet */}
         <Animated.View style={{ transform: [{ translateY: dropletY }] }}>
-          <Ionicons name="water" size={84} color="#00e5ff" />
+          <Ionicons name="water" size={84} color={colors.teal} />
         </Animated.View>
       </View>
 
@@ -236,8 +237,8 @@ function AnimatedSplashScreen({ onAnimationEnd }: AnimatedSplashScreenProps) {
           alignItems: 'center',
         }}
       >
-        <Text className="text-4xl font-extrabold text-white tracking-tight">Sip Habit</Text>
-        <Text className="text-xs text-cyan-200 font-semibold tracking-widest uppercase mt-2">
+        <Text style={{ fontSize: 36, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>Sip Habit</Text>
+        <Text style={{ fontSize: 12, color: colors.muted, fontWeight: '700', letterSpacing: 3, textTransform: 'uppercase', marginTop: 8 }}>
           Track Hydration • Stay Healthy
         </Text>
       </Animated.View>

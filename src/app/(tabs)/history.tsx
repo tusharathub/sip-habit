@@ -10,6 +10,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '../../store/hooks';
 import { DrinkLog } from '../../store/slices/hydrationSlice';
+import { colors, sketchCard, sketchCardInner, sketchPill } from '../../theme';
 
 export default function HistoryScreen() {
   const insets = useSafeAreaInsets();
@@ -97,62 +98,57 @@ export default function HistoryScreen() {
 
   return (
     <View 
-      className="flex-1 bg-[#F7F9FB]" 
-      style={{ paddingTop: insets.top }}
+      style={{ flex: 1, backgroundColor: colors.cream, paddingTop: insets.top }}
     >
       <StatusBar barStyle="dark-content" />
 
       {/* Top Header */}
-      <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="water-outline" size={24} color="#006875" />
-          <Text className="text-xl font-bold text-[#006875] tracking-tight">Sip Habit</Text>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        borderBottomWidth: 2.5,
+        borderBottomColor: colors.charcoal,
+        backgroundColor: colors.cream,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Ionicons name="water-outline" size={24} color={colors.teal} />
+          <Text style={{ fontSize: 22, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>Sip Habit</Text>
         </View>
       </View>
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-        className="px-5 pt-6"
+        contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 24 }}
       >
         {/* Header Section */}
-        <View className="mb-6">
-          <Text className="text-2xl font-bold text-[#191c1e] mb-1">Hydration Insights</Text>
-          <Text className="text-sm text-[#3b494c]">Your weekly progress and hydration consistency.</Text>
+        <View style={{ marginBottom: 24 }}>
+          <Text style={{ fontSize: 26, fontWeight: '800', color: colors.charcoal, marginBottom: 4, letterSpacing: -0.5 }}>Hydration Insights</Text>
+          <Text style={{ fontSize: 13, color: colors.muted, fontWeight: '500' }}>Your weekly progress and hydration consistency.</Text>
         </View>
 
         {/* Main Analytics Card (Weekly Overview) */}
-        <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
-        >
-          <View className="flex-row justify-between items-end mb-6">
+        <View style={[sketchCard, { padding: 20, marginBottom: 20 }]}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
             <View>
-              <Text className="text-[10px] font-bold text-[#546A7E] tracking-widest uppercase mb-1">
+              <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
                 WEEKLY OVERVIEW
               </Text>
-              <Text className="text-xl font-extrabold text-[#006875]">
+              <Text style={{ fontSize: 20, fontWeight: '900', color: colors.charcoal }}>
                 Avg. {averageIntakeL}L Daily
               </Text>
             </View>
-            <View 
-              className="bg-[#00e5ff]/15 px-3 py-1 rounded-full border"
-              style={{ borderColor: 'rgba(0, 104, 117, 0.1)' }}
-            >
-              <Text className="text-xs font-bold text-[#006875]">
+            <View style={[sketchPill]}>
+              <Text style={{ fontSize: 10, fontWeight: '800', color: colors.charcoal }}>
                 GOAL: {(dailyGoal / 1000).toFixed(1)}L
               </Text>
             </View>
           </View>
 
           {/* Bar Chart Grid */}
-          <View className="flex-row items-end justify-between h-48 gap-3 px-1">
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', height: 192, gap: 10, paddingHorizontal: 4 }}>
             {weeklyData.map((dayData, idx) => {
               const isSelected = selectedBarIdx === idx;
               return (
@@ -160,26 +156,43 @@ export default function HistoryScreen() {
                   key={idx} 
                   onPress={() => setSelectedBarIdx(idx)}
                   activeOpacity={0.85}
-                  className="flex-1 flex-col items-center gap-2 h-full justify-end"
+                  style={{ flex: 1, alignItems: 'center', gap: 8, height: '100%', justifyContent: 'flex-end' }}
                 >
                   {/* Bar outline */}
                   <View 
-                    className={`w-full rounded-t-full relative overflow-hidden h-[80%] flex-col justify-end border ${
-                      isSelected ? 'border-[#006875]' : 'border-transparent bg-[#eceef0]'
-                    }`}
                     style={{
-                      backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.05)' : '#eceef0',
+                      width: '100%',
+                      borderTopLeftRadius: 100,
+                      borderTopRightRadius: 100,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      height: '80%',
+                      justifyContent: 'flex-end',
+                      borderWidth: isSelected ? 2 : 1.5,
+                      borderColor: isSelected ? colors.charcoal : colors.mutedLight,
+                      backgroundColor: isSelected ? colors.creamLight : colors.creamDark,
                     }}
                   >
                     {/* Liquid fill representing percentage */}
                     <View 
-                      style={{ height: `${dayData.isFuture ? 0 : dayData.percent}%` }}
-                      className="w-full bg-[#006875] rounded-t-full absolute bottom-0"
+                      style={{
+                        height: `${dayData.isFuture ? 0 : dayData.percent}%`,
+                        width: '100%',
+                        backgroundColor: isSelected ? colors.teal : colors.charcoal,
+                        borderTopLeftRadius: 100,
+                        borderTopRightRadius: 100,
+                        position: 'absolute',
+                        bottom: 0,
+                      }}
                     />
                   </View>
-                  <Text className={`text-[9px] font-bold uppercase ${
-                    isSelected ? 'text-[#006875] scale-110' : 'text-[#8a9cae]'
-                  }`}>
+                  <Text style={{
+                    fontSize: 9,
+                    fontWeight: '800',
+                    textTransform: 'uppercase',
+                    color: isSelected ? colors.charcoal : colors.muted,
+                    transform: [{ scale: isSelected ? 1.1 : 1 }],
+                  }}>
                     {dayData.day}
                   </Text>
                 </TouchableOpacity>
@@ -189,16 +202,16 @@ export default function HistoryScreen() {
 
           {/* Selected Day Details Panel */}
           {selectedBarIdx !== null && (
-            <View className="mt-5 bg-[#F7F9FB] border border-[#eceef0] p-3 rounded-2xl flex-row justify-between items-center">
+            <View style={[sketchCardInner, { marginTop: 20, padding: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
               <View>
-                <Text className="text-[9px] font-bold text-[#8a9cae] uppercase tracking-wider">SELECTED DAY</Text>
-                <Text className="text-xs font-bold text-[#001f24] mt-0.5">{weeklyData[selectedBarIdx].dateStr}</Text>
+                <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, textTransform: 'uppercase', letterSpacing: 1 }}>SELECTED DAY</Text>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: colors.charcoal, marginTop: 2 }}>{weeklyData[selectedBarIdx].dateStr}</Text>
               </View>
-              <View className="items-end">
-                <Text className="text-xs font-extrabold text-[#006875]">
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={{ fontSize: 12, fontWeight: '900', color: colors.teal }}>
                   {weeklyData[selectedBarIdx].total}ml / {weeklyData[selectedBarIdx].dailyGoal}ml
                 </Text>
-                <Text className="text-[9px] font-bold uppercase tracking-wider text-[#3b494c] mt-0.5">
+                <Text style={{ fontSize: 9, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: colors.muted, marginTop: 2 }}>
                   {weeklyData[selectedBarIdx].total >= weeklyData[selectedBarIdx].dailyGoal ? 'Goal Met 🎉' : 'Missed 💧'}
                 </Text>
               </View>
@@ -207,26 +220,28 @@ export default function HistoryScreen() {
         </View>
 
         {/* Bento Insights Cards Row */}
-        <View className="flex-row gap-4 mb-5">
+        <View style={{ flexDirection: 'row', gap: 14, marginBottom: 20 }}>
           {/* Streak Card */}
           <View 
-            className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-row items-center gap-3.5"
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
+            style={[sketchCard, { flex: 1, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14 }]}
           >
-            <View className="w-12 h-12 rounded-2xl bg-[#d5e3ff] items-center justify-center">
-              <Ionicons name="trophy" size={24} color="#001B3C" />
+            <View style={{
+              width: 48,
+              height: 48,
+              borderRadius: 16,
+              backgroundColor: colors.salmonLight,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 1.5,
+              borderColor: colors.charcoal,
+            }}>
+              <Ionicons name="trophy" size={24} color={colors.charcoal} />
             </View>
-            <View className="flex-1">
-              <Text className="text-[9px] font-bold text-[#8a9cae] tracking-widest uppercase mb-0.5">
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>
                 BEST STREAK
               </Text>
-              <Text className="text-base font-extrabold text-[#191c1e] truncate">
+              <Text style={{ fontSize: 16, fontWeight: '900', color: colors.charcoal }}>
                 {streak} Days
               </Text>
             </View>
@@ -234,29 +249,22 @@ export default function HistoryScreen() {
  
           {/* Weekday Streak Fire Card */}
           <View 
-            className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-col justify-between"
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 2,
-              elevation: 1,
-            }}
+            style={[sketchCard, { flex: 1, padding: 16, justifyContent: 'space-between' }]}
           >
-            <Text className="text-[9px] font-bold text-[#8a9cae] tracking-widest uppercase mb-2">
+            <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
               WEEKLY TARGETS
             </Text>
-            <View className="flex-row justify-between items-center w-full">
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
               {weeklyData.map((d, idx) => {
                 const isGoalMet = d.total >= d.dailyGoal;
                 const letter = d.day === 'THU' ? 'T' : (d.day === 'SUN' || d.day === 'SAT' ? 'S' : d.day[0]);
                 return (
-                  <View key={idx} className="items-center gap-1.5 flex-1">
-                    <Text className="text-[9px] font-bold text-[#8a9cae]">{letter}</Text>
+                  <View key={idx} style={{ alignItems: 'center', gap: 6, flex: 1 }}>
+                    <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted }}>{letter}</Text>
                     <Ionicons 
                       name={isGoalMet && !d.isFuture ? "flame" : "flame-outline"} 
                       size={15} 
-                      color={isGoalMet && !d.isFuture ? "#ff9100" : "#d8dadc"} 
+                      color={isGoalMet && !d.isFuture ? colors.flame : colors.mutedLight} 
                     />
                   </View>
                 );
@@ -266,56 +274,65 @@ export default function HistoryScreen() {
         </View>
  
         {/* Daily Logs list */}
-        <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
-        >
-          <Text className="text-sm font-bold text-[#191c1e] mb-4">Daily Summary Logs</Text>
+        <View style={[sketchCard, { padding: 20, marginBottom: 20 }]}>
+          <Text style={{ fontSize: 14, fontWeight: '800', color: colors.charcoal, marginBottom: 16 }}>Daily Summary Logs</Text>
           
-          <View className="space-y-4">
+          <View style={{ gap: 12 }}>
             {historyList.map((dayData, idx) => {
               const isGoalMet = dayData.total >= dayData.dailyGoal;
               return (
                 <View 
                   key={idx}
-                  className="flex-row items-center justify-between p-1 rounded-lg"
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 4 }}
                 >
-                  <View className="flex-row items-center gap-3.5">
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
                     {/* Status Badge Icon */}
                     <View 
-                      className="w-10 h-10 rounded-full items-center justify-center"
-                      style={{ backgroundColor: isGoalMet ? 'rgba(0, 229, 255, 0.2)' : '#eceef0' }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 20,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isGoalMet ? colors.tealSoft : colors.creamDark,
+                        borderWidth: 1.5,
+                        borderColor: isGoalMet ? colors.teal : colors.mutedLight,
+                      }}
                     >
                       <Ionicons 
                         name={isGoalMet ? 'checkmark' : 'close'} 
                         size={18} 
-                        color={isGoalMet ? '#006875' : '#8a9cae'} 
+                        color={isGoalMet ? colors.teal : colors.mutedLight} 
                       />
                     </View>
                     
                     <View>
-                      <Text className="text-[10px] font-bold text-[#191c1e] tracking-wider">
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: colors.charcoal, letterSpacing: 1 }}>
                         {dayData.dateStr}
                       </Text>
-                      <Text className="text-sm font-semibold text-[#3b494c] mt-0.5">
+                      <Text style={{ fontSize: 13, fontWeight: '600', color: colors.muted, marginTop: 2 }}>
                         {(dayData.total / 1000).toFixed(1)}L / {(dayData.dailyGoal / 1000).toFixed(1)}L
                       </Text>
                     </View>
                   </View>
 
                   <View 
-                    className="px-2.5 py-1 rounded-lg"
-                    style={{ backgroundColor: isGoalMet ? 'rgba(0, 104, 117, 0.1)' : '#f3f4f6' }}
+                    style={{
+                      paddingHorizontal: 10,
+                      paddingVertical: 4,
+                      borderRadius: 10,
+                      backgroundColor: isGoalMet ? colors.salmonLight : colors.creamDark,
+                      borderWidth: 1.5,
+                      borderColor: isGoalMet ? colors.charcoal : colors.mutedLight,
+                    }}
                   >
-                    <Text className={`text-[9px] font-bold uppercase tracking-widest ${
-                      isGoalMet ? 'text-[#006875]' : 'text-[#8a9cae]'
-                    }`}>
+                    <Text style={{
+                      fontSize: 9,
+                      fontWeight: '800',
+                      textTransform: 'uppercase',
+                      letterSpacing: 1.5,
+                      color: isGoalMet ? colors.charcoal : colors.muted,
+                    }}>
                       {isGoalMet ? 'Goal Met' : 'Missed'}
                     </Text>
                   </View>
@@ -327,23 +344,16 @@ export default function HistoryScreen() {
 
         {/* Healthy Tip Card */}
         <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 relative overflow-hidden"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={[sketchCard, { padding: 20, position: 'relative', overflow: 'hidden' }]}
         >
-          <View className="z-10 max-w-[85%]">
-            <Text className="text-base font-bold text-[#006875] mb-1">Healthy Tip</Text>
-            <Text className="text-xs text-[#3b494c] leading-relaxed italic">
+          <View style={{ zIndex: 10, maxWidth: '85%' }}>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: colors.teal, marginBottom: 6 }}>Healthy Tip</Text>
+            <Text style={{ fontSize: 12, color: colors.muted, lineHeight: 18, fontStyle: 'italic' }}>
               "Drinking a glass of water first thing in the morning boosts your metabolism and improves cognitive performance throughout the day."
             </Text>
           </View>
-          <View className="absolute -right-6 -bottom-6 opacity-[0.04]">
-            <Ionicons name="water" size={120} color="#006875" />
+          <View style={{ position: 'absolute', right: -20, bottom: -20, opacity: 0.04 }}>
+            <Ionicons name="water" size={120} color={colors.charcoal} />
           </View>
         </View>
 

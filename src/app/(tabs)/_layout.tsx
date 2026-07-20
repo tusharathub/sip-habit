@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Platform, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../../theme';
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
@@ -24,16 +25,16 @@ export default function TabsLayout() {
           height: '100%',
         },
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#ECEEF0',
-          borderTopWidth: 1,
+          backgroundColor: colors.cream,
+          borderTopColor: colors.charcoal,
+          borderTopWidth: 2.5,
           height: 64 + (insets.bottom > 0 ? insets.bottom : 8),
           paddingTop: 8,
           paddingBottom: insets.bottom > 0 ? insets.bottom : 8,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
+          shadowColor: colors.charcoal,
+          shadowOffset: { width: 0, height: -3 },
+          shadowOpacity: 0.08,
+          shadowRadius: 0,
           elevation: 8,
         },
       }}
@@ -43,21 +44,45 @@ export default function TabsLayout() {
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View 
-              className={`items-center justify-center flex-col ${
-                focused 
-                  ? 'bg-[#D5E3FF] px-4 py-1.5 rounded-full' 
-                  : 'px-4 py-1.5'
-              }`}
+              style={focused ? {
+                backgroundColor: colors.salmon,
+                borderColor: colors.charcoal,
+                borderWidth: 1.5,
+                borderRadius: 20,
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: colors.charcoal,
+                    shadowOffset: { width: 2, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 0,
+                  },
+                  android: { elevation: 3 },
+                }),
+              } : {
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
             >
               <Ionicons
                 name={focused ? 'grid' : 'grid-outline'}
                 size={20}
-                color={focused ? '#001B3C' : '#546A7E'}
+                color={focused ? colors.charcoal : colors.muted}
               />
               <Text 
-                className={`text-[10px] font-bold mt-0.5 ${
-                  focused ? 'text-[#001B3C]' : 'text-[#546A7E]'
-                }`}
+                style={{
+                  fontSize: 10,
+                  fontWeight: '700',
+                  marginTop: 2,
+                  color: focused ? colors.charcoal : colors.muted,
+                }}
               >
                 Dashboard
               </Text>
@@ -70,21 +95,45 @@ export default function TabsLayout() {
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View 
-              className={`items-center justify-center flex-col ${
-                focused 
-                  ? 'bg-[#D5E3FF] px-4 py-1.5 rounded-full' 
-                  : 'px-4 py-1.5'
-              }`}
+              style={focused ? {
+                backgroundColor: colors.salmon,
+                borderColor: colors.charcoal,
+                borderWidth: 1.5,
+                borderRadius: 20,
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: colors.charcoal,
+                    shadowOffset: { width: 2, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 0,
+                  },
+                  android: { elevation: 3 },
+                }),
+              } : {
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
             >
               <Ionicons
                 name={focused ? 'add-circle' : 'add-circle-outline'}
                 size={20}
-                color={focused ? '#001B3C' : '#546A7E'}
+                color={focused ? colors.charcoal : colors.muted}
               />
               <Text 
-                className={`text-[10px] font-bold mt-0.5 ${
-                  focused ? 'text-[#001B3C]' : 'text-[#546A7E]'
-                }`}
+                style={{
+                  fontSize: 10,
+                  fontWeight: '700',
+                  marginTop: 2,
+                  color: focused ? colors.charcoal : colors.muted,
+                }}
               >
                 Log
               </Text>
@@ -97,21 +146,45 @@ export default function TabsLayout() {
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View 
-              className={`items-center justify-center flex-col ${
-                focused 
-                  ? 'bg-[#D5E3FF] px-4 py-1.5 rounded-full' 
-                  : 'px-4 py-1.5'
-              }`}
+              style={focused ? {
+                backgroundColor: colors.salmon,
+                borderColor: colors.charcoal,
+                borderWidth: 1.5,
+                borderRadius: 20,
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: colors.charcoal,
+                    shadowOffset: { width: 2, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 0,
+                  },
+                  android: { elevation: 3 },
+                }),
+              } : {
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
             >
               <Ionicons
                 name={focused ? 'analytics' : 'analytics-outline'}
                 size={20}
-                color={focused ? '#001B3C' : '#546A7E'}
+                color={focused ? colors.charcoal : colors.muted}
               />
               <Text 
-                className={`text-[10px] font-bold mt-0.5 ${
-                  focused ? 'text-[#001B3C]' : 'text-[#546A7E]'
-                }`}
+                style={{
+                  fontSize: 10,
+                  fontWeight: '700',
+                  marginTop: 2,
+                  color: focused ? colors.charcoal : colors.muted,
+                }}
               >
                 History
               </Text>
@@ -124,21 +197,45 @@ export default function TabsLayout() {
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View 
-              className={`items-center justify-center flex-col ${
-                focused 
-                  ? 'bg-[#D5E3FF] px-4 py-1.5 rounded-full' 
-                  : 'px-4 py-1.5'
-              }`}
+              style={focused ? {
+                backgroundColor: colors.salmon,
+                borderColor: colors.charcoal,
+                borderWidth: 1.5,
+                borderRadius: 20,
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: colors.charcoal,
+                    shadowOffset: { width: 2, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 0,
+                  },
+                  android: { elevation: 3 },
+                }),
+              } : {
+                paddingHorizontal: 16,
+                paddingVertical: 6,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
             >
               <Ionicons
                 name={focused ? 'person' : 'person-outline'}
                 size={20}
-                color={focused ? '#001B3C' : '#546A7E'}
+                color={focused ? colors.charcoal : colors.muted}
               />
               <Text 
-                className={`text-[10px] font-bold mt-0.5 ${
-                  focused ? 'text-[#001B3C]' : 'text-[#546A7E]'
-                }`}
+                style={{
+                  fontSize: 10,
+                  fontWeight: '700',
+                  marginTop: 2,
+                  color: focused ? colors.charcoal : colors.muted,
+                }}
               >
                 Profile
               </Text>

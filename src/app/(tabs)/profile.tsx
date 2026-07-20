@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { resetSettings, updateSettings } from '../../store/slices/settingsSlice';
 import { resetHydration } from '../../store/slices/hydrationSlice';
+import { colors, sketchCard, sketchCardInner, sketchButtonPrimary, sketchButtonSecondary, sketchPill } from '../../theme';
 
 
 export default function ProfileScreen() {
@@ -70,143 +71,177 @@ export default function ProfileScreen() {
 
   return (
     <View 
-      className="flex-1 bg-[#F7F9FB]" 
-      style={{ paddingTop: insets.top }}
+      style={{ flex: 1, backgroundColor: colors.cream, paddingTop: insets.top }}
     >
       <StatusBar barStyle="dark-content" />
 
       {/* Top Header */}
-      <View className="flex-row items-center justify-between px-5 py-4 bg-white/80 border-b border-black/5">
-        <View className="flex-row items-center gap-2">
-          <Ionicons name="water-outline" size={24} color="#006875" />
-          <Text className="text-xl font-bold text-[#006875] tracking-tight">Sip Habit</Text>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+        borderBottomWidth: 2.5,
+        borderBottomColor: colors.charcoal,
+        backgroundColor: colors.cream,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Ionicons name="water-outline" size={24} color={colors.teal} />
+          <Text style={{ fontSize: 22, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>Sip Habit</Text>
         </View>
         <TouchableOpacity 
           onPress={handleReset}
-          className="px-3 py-1.5 rounded-full active:scale-95"
-          style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
+          style={{
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+            borderRadius: 14,
+            backgroundColor: colors.dangerBg,
+            borderWidth: 1.5,
+            borderColor: colors.danger,
+          }}
+          activeOpacity={0.8}
         >
-          <Text className="text-[10px] font-bold text-[#ef4444] uppercase tracking-wider">RESET</Text>
+          <Text style={{ fontSize: 10, fontWeight: '800', color: colors.danger, textTransform: 'uppercase', letterSpacing: 1 }}>RESET</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-        className="px-5 pt-6"
+        contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 24 }}
       >
         {/* User Card */}
         <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 flex-row items-center gap-4"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={[sketchCard, { padding: 20, marginBottom: 14, flexDirection: 'row', alignItems: 'center', gap: 16 }]}
         >
           <View 
-            className="w-14 h-14 rounded-full items-center justify-center"
-            style={{ backgroundColor: 'rgba(0, 104, 117, 0.15)' }}
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.salmonLight,
+              borderWidth: 2,
+              borderColor: colors.charcoal,
+            }}
           >
-            <Ionicons name="person" size={28} color="#006875" />
+            <Ionicons name="person" size={28} color={colors.charcoal} />
           </View>
-          <View className="flex-1">
-            <Text className="text-lg font-bold text-[#191c1e]">Hydration Hero</Text>
-            <Text className="text-xs text-[#8a9cae] font-semibold mt-0.5">Stay healthy, stay refreshed</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 18, fontWeight: '800', color: colors.charcoal }}>Hydration Hero</Text>
+            <Text style={{ fontSize: 12, color: colors.muted, fontWeight: '600', marginTop: 2 }}>Stay healthy, stay refreshed</Text>
           </View>
         </View>
 
         {/* Bento Card 1: Intake Goal Adjuster */}
-        <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
-        >
-          <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-4">
+        <View style={[sketchCard, { padding: 20, marginBottom: 14 }]}>
+          <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             DAILY INTAKE GOAL
           </Text>
 
-          <View className="flex-row items-center justify-between bg-gray-50 border border-gray-100 p-4 rounded-2xl mb-4">
+          <View style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, marginBottom: 16 }]}>
             <TouchableOpacity 
               onPress={() => adjustGoal(-250)}
-              className="w-10 h-10 rounded-full bg-white border border-[#eceef0] items-center justify-center active:scale-95"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: colors.cream,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              activeOpacity={0.8}
             >
-              <Ionicons name="remove" size={20} color="#006875" />
+              <Ionicons name="remove" size={20} color={colors.charcoal} />
             </TouchableOpacity>
             
-            <View className="items-center">
-              <Text className="text-3xl font-extrabold text-[#001f24] tracking-tight">{dailyGoal}ml</Text>
-              <Text className="text-[9px] font-bold text-[#8a9cae] uppercase mt-0.5">TARGET</Text>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: 28, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>{dailyGoal}ml</Text>
+              <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, textTransform: 'uppercase', marginTop: 2 }}>TARGET</Text>
             </View>
 
             <TouchableOpacity 
               onPress={() => adjustGoal(250)}
-              className="w-10 h-10 rounded-full bg-white border border-[#eceef0] items-center justify-center active:scale-95"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: colors.cream,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              activeOpacity={0.8}
             >
-              <Ionicons name="add" size={20} color="#006875" />
+              <Ionicons name="add" size={20} color={colors.charcoal} />
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity 
             onPress={() => setShowGoalModal(true)}
-            className="w-full py-3 border rounded-2xl items-center active:scale-95"
-            style={{
-              backgroundColor: 'rgba(0, 104, 117, 0.1)',
-              borderColor: 'rgba(0, 104, 117, 0.1)',
-            }}
+            style={[sketchButtonPrimary, { width: '100%', paddingVertical: 12, alignItems: 'center' }]}
+            activeOpacity={0.8}
           >
-            <Text className="text-xs font-bold text-[#006875] uppercase tracking-wider">Set Custom Goal</Text>
+            <Text style={{ fontSize: 12, fontWeight: '800', color: colors.charcoal, textTransform: 'uppercase', letterSpacing: 1 }}>Set Custom Goal</Text>
           </TouchableOpacity>
         </View>
 
         {/* Bento Card 2: Body Parameters (Weight Adjuster) */}
-        <View 
-          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
-        >
-          <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-4">
+        <View style={[sketchCard, { padding: 20, marginBottom: 14 }]}>
+          <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             BODY WEIGHT PARAMETER
           </Text>
 
-          <View className="flex-row items-center justify-between bg-gray-50 border border-gray-100 p-4 rounded-2xl mb-3">
+          <View style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, marginBottom: 12 }]}>
             <TouchableOpacity 
               onPress={() => adjustWeight(-5)}
-              className="w-10 h-10 rounded-full bg-white border border-[#eceef0] items-center justify-center active:scale-95"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: colors.cream,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              activeOpacity={0.8}
             >
-              <Ionicons name="remove" size={20} color="#006875" />
+              <Ionicons name="remove" size={20} color={colors.charcoal} />
             </TouchableOpacity>
             
-            <View className="items-center">
-              <Text className="text-2xl font-extrabold text-[#001f24] tracking-tight">{weight} kg</Text>
-              <Text className="text-[9px] font-bold text-[#8a9cae] uppercase mt-0.5">CURRENT WEIGHT</Text>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: 24, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>{weight} kg</Text>
+              <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, textTransform: 'uppercase', marginTop: 2 }}>CURRENT WEIGHT</Text>
             </View>
 
             <TouchableOpacity 
               onPress={() => adjustWeight(5)}
-              className="w-10 h-10 rounded-full bg-white border border-[#eceef0] items-center justify-center active:scale-95"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: colors.cream,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              activeOpacity={0.8}
             >
-              <Ionicons name="add" size={20} color="#006875" />
+              <Ionicons name="add" size={20} color={colors.charcoal} />
             </TouchableOpacity>
           </View>
 
-          <View className="bg-[#eceef0]/40 p-3.5 rounded-2xl border border-[#eceef0] flex-row items-start gap-3">
-            <Ionicons name="bulb" size={18} color="#006875" style={{ marginTop: 1 }} />
-            <View className="flex-1">
-              <Text className="text-[11px] text-[#3b494c] leading-relaxed">
-                Ideal daily hydration is calculated at 35ml per kg of body weight. For you, the recommended target is <Text className="font-bold text-[#006875]">{recommendedIntake}ml</Text>.
+          <View style={[sketchCardInner, { padding: 14, flexDirection: 'row', alignItems: 'flex-start', gap: 12 }]}>
+            <Ionicons name="bulb" size={18} color={colors.teal} style={{ marginTop: 1 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 11, color: colors.muted, lineHeight: 17 }}>
+                Ideal daily hydration is calculated at 35ml per kg of body weight. For you, the recommended target is <Text style={{ fontWeight: '800', color: colors.teal }}>{recommendedIntake}ml</Text>.
               </Text>
             </View>
           </View>
@@ -214,121 +249,82 @@ export default function ProfileScreen() {
 
         {/* Bento Card 3: How to Use & Privacy (Collapsible Accordion) */}
         <View 
-          className="bg-white border border-[#eceef0] rounded-3xl mb-3 overflow-hidden"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={[sketchCard, { marginBottom: 14, overflow: 'hidden', padding: 0 }]}
         >
           <TouchableOpacity 
             onPress={() => setIsHowToUseExpanded(!isHowToUseExpanded)}
             activeOpacity={0.7}
-            className="flex-row items-center justify-between p-5"
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20 }}
           >
-            <View className="flex-row items-center gap-2.5">
-              <Ionicons name="help-circle-outline" size={22} color="#006875" />
-              <Text className="text-sm font-bold text-[#006875] tracking-wide uppercase">
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Ionicons name="help-circle-outline" size={22} color={colors.teal} />
+              <Text style={{ fontSize: 13, fontWeight: '800', color: colors.charcoal, letterSpacing: 0.5, textTransform: 'uppercase' }}>
                 How to Use & Privacy
               </Text>
             </View>
             <Ionicons 
               name={isHowToUseExpanded ? "chevron-up" : "chevron-down"} 
               size={20} 
-              color="#006875" 
+              color={colors.charcoal} 
             />
           </TouchableOpacity>
 
           {isHowToUseExpanded && (
-            <View className="px-5 pb-5 border-t border-[#eceef0] pt-4">
+            <View style={{ paddingHorizontal: 20, paddingBottom: 20, borderTopWidth: 1.5, borderTopColor: colors.borderLight, paddingTop: 16 }}>
               {/* Quick Guide */}
-              <View className="mb-4">
-                <Text className="text-sm font-bold text-[#191c1e] mb-3">Quick Guide</Text>
+              <View style={{ marginBottom: 16 }}>
+                <Text style={{ fontSize: 14, fontWeight: '800', color: colors.charcoal, marginBottom: 12 }}>Quick Guide</Text>
                 
-                <View 
-                  className="flex-row items-start gap-2.5 mb-2.5"
-                >
-                  <View 
-                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                  >
-                    <Text className="text-[10px] font-bold text-[#006875]">1</Text>
+                {[
+                  'Set your weight above to calculate a recommended daily target, or customize it to your liking.',
+                  'On the main screen, select and tap a cup size to quickly log your water intake throughout the day.',
+                  'Check the History and Log tabs to view detailed statistics and charts of your hydration progress.',
+                  'Enable reminders to receive periodic local notifications that keep you on track.',
+                ].map((text, i) => (
+                  <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+                    <View style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 10,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 2,
+                      backgroundColor: colors.salmonLight,
+                      borderWidth: 1,
+                      borderColor: colors.charcoal,
+                    }}>
+                      <Text style={{ fontSize: 10, fontWeight: '800', color: colors.charcoal }}>{i + 1}</Text>
+                    </View>
+                    <Text style={{ fontSize: 12, color: colors.muted, flex: 1, lineHeight: 18 }}>{text}</Text>
                   </View>
-                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                    Set your weight above to calculate a recommended daily target, or customize it to your liking.
-                  </Text>
-                </View>
-
-                <View 
-                  className="flex-row items-start gap-2.5 mb-2.5"
-                >
-                  <View 
-                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                  >
-                    <Text className="text-[10px] font-bold text-[#006875]">2</Text>
-                  </View>
-                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                    On the main screen, select and tap a cup size to quickly log your water intake throughout the day.
-                  </Text>
-                </View>
-
-                <View 
-                  className="flex-row items-start gap-2.5 mb-2.5"
-                >
-                  <View 
-                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                  >
-                    <Text className="text-[10px] font-bold text-[#006875]">3</Text>
-                  </View>
-                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                    Check the History and Log tabs to view detailed statistics and charts of your hydration progress.
-                  </Text>
-                </View>
-
-                <View 
-                  className="flex-row items-start gap-2.5"
-                >
-                  <View 
-                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                  >
-                    <Text className="text-[10px] font-bold text-[#006875]">4</Text>
-                  </View>
-                  <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                    Enable reminders to receive periodic local notifications that keep you on track.
-                  </Text>
-                </View>
+                ))}
               </View>
 
-              <View className="h-[1px] bg-[#eceef0] my-2" />
+              <View style={{ height: 1, backgroundColor: colors.borderLight, marginVertical: 8 }} />
 
               {/* Privacy & Permissions */}
-              <View className="mt-3">
-                <View className="flex-row items-center gap-2 mb-2">
-                  <Ionicons name="shield-checkmark-outline" size={18} color="#10b981" />
-                  <Text className="text-sm font-bold text-[#191c1e]">Your Data, Your Device</Text>
+              <View style={{ marginTop: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <Ionicons name="shield-checkmark-outline" size={18} color={colors.teal} />
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: colors.charcoal }}>Your Data, Your Device</Text>
                 </View>
-                <Text className="text-xs text-[#3b494c] leading-relaxed mb-3">
+                <Text style={{ fontSize: 12, color: colors.muted, lineHeight: 18, marginBottom: 12 }}>
                   We highly value your privacy. The app is built with a local-first architecture:
                 </Text>
-                <View className="bg-gray-50 border border-gray-100 p-3.5 rounded-2xl">
-                  <View className="flex-row items-center gap-2 mb-1.5">
-                    <Ionicons name="cloud-offline-outline" size={15} color="#006875" />
-                    <Text className="text-[11px] font-bold text-[#006875]">100% On-Device & Offline</Text>
+                <View style={[sketchCardInner, { padding: 14 }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <Ionicons name="cloud-offline-outline" size={15} color={colors.teal} />
+                    <Text style={{ fontSize: 11, fontWeight: '800', color: colors.teal }}>100% On-Device & Offline</Text>
                   </View>
-                  <Text className="text-[11px] text-[#5c6f84] leading-relaxed mb-4">
+                  <Text style={{ fontSize: 11, color: colors.muted, lineHeight: 17, marginBottom: 16 }}>
                     No user accounts, tracking, or cloud sync. Everything is stored locally on your device and never leaves it.
                   </Text>
 
-                  <View className="flex-row items-start gap-2 mb-1.5">
-                    <Ionicons name="notifications-outline" size={15} color="#006875" style={{ marginTop: 1 }} />
-                    <View className="flex-1">
-                      <Text className="text-[11px] font-bold text-[#006875]">Notification Permission Only</Text>
-                      <Text className="text-[11px] text-[#5c6f84] leading-relaxed mt-1">
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
+                    <Ionicons name="notifications-outline" size={15} color={colors.teal} style={{ marginTop: 1 }} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 11, fontWeight: '800', color: colors.teal }}>Notification Permission Only</Text>
+                      <Text style={{ fontSize: 11, color: colors.muted, lineHeight: 17, marginTop: 4 }}>
                         We request notification permission strictly to trigger local reminders for your water intake. No other permissions or personal data are collected.
                       </Text>
                     </View>
@@ -341,94 +337,55 @@ export default function ProfileScreen() {
 
         {/* Bento Card 4: How to Add & Use Widget */}
         <View 
-          className="bg-white border border-[#eceef0] rounded-3xl mb-5 overflow-hidden"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.05,
-            shadowRadius: 2,
-            elevation: 1,
-          }}
+          style={[sketchCard, { marginBottom: 20, overflow: 'hidden', padding: 0 }]}
         >
           <TouchableOpacity 
             onPress={() => setIsWidgetGuideExpanded(!isWidgetGuideExpanded)}
             activeOpacity={0.7}
-            className="flex-row items-center justify-between p-5"
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20 }}
           >
-            <View className="flex-row items-center gap-2.5">
-              <Ionicons name="grid-outline" size={22} color="#006875" />
-              <Text className="text-sm font-bold text-[#006875] tracking-wide uppercase">
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Ionicons name="grid-outline" size={22} color={colors.teal} />
+              <Text style={{ fontSize: 13, fontWeight: '800', color: colors.charcoal, letterSpacing: 0.5, textTransform: 'uppercase' }}>
                 Home Screen Widget
               </Text>
             </View>
             <Ionicons 
               name={isWidgetGuideExpanded ? "chevron-up" : "chevron-down"} 
               size={20} 
-              color="#006875" 
+              color={colors.charcoal} 
             />
           </TouchableOpacity>
 
           {isWidgetGuideExpanded && (
-            <View className="px-5 pb-5 border-t border-[#eceef0] pt-4">
-              <Text className="text-xs text-[#3b494c] leading-relaxed mb-4">
+            <View style={{ paddingHorizontal: 20, paddingBottom: 20, borderTopWidth: 1.5, borderTopColor: colors.borderLight, paddingTop: 16 }}>
+              <Text style={{ fontSize: 12, color: colors.muted, lineHeight: 18, marginBottom: 16 }}>
                 Track your daily progress and log drinks directly from your device home screen:
               </Text>
 
-              <View 
-                className="flex-row items-start gap-2.5 mb-2.5"
-              >
-                <View 
-                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                >
-                  <Text className="text-[10px] font-bold text-[#006875]">1</Text>
+              {[
+                { text: <>Go to your phone's home screen, <Text style={{ fontWeight: '700', color: colors.charcoal }}>long-press</Text> empty space, and choose <Text style={{ fontWeight: '700', color: colors.charcoal }}>Widgets</Text>.</> },
+                { text: <>Locate <Text style={{ fontWeight: '700', color: colors.charcoal }}>Sip Habit</Text> in the widgets list.</> },
+                { text: <>Touch and hold the <Text style={{ fontWeight: '700', color: colors.charcoal }}>Sip Habit Progress</Text> widget, then drag it onto your screen.</> },
+                { text: <>Tap any of the logging buttons (<Text style={{ fontWeight: '700', color: colors.teal }}>+250</Text>, <Text style={{ fontWeight: '700', color: colors.teal }}>+500</Text>, <Text style={{ fontWeight: '700', color: colors.teal }}>+750</Text>) to record water instantly.</> },
+              ].map((item, i) => (
+                <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+                  <View style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 2,
+                    backgroundColor: colors.salmonLight,
+                    borderWidth: 1,
+                    borderColor: colors.charcoal,
+                  }}>
+                    <Text style={{ fontSize: 10, fontWeight: '800', color: colors.charcoal }}>{i + 1}</Text>
+                  </View>
+                  <Text style={{ fontSize: 12, color: colors.muted, flex: 1, lineHeight: 18 }}>{item.text}</Text>
                 </View>
-                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                  Go to your phone's home screen, <Text className="font-semibold text-[#191c1e]">long-press</Text> empty space, and choose <Text className="font-semibold text-[#191c1e]">Widgets</Text>.
-                </Text>
-              </View>
-
-              <View 
-                className="flex-row items-start gap-2.5 mb-2.5"
-              >
-                <View 
-                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                >
-                  <Text className="text-[10px] font-bold text-[#006875]">2</Text>
-                </View>
-                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                  Locate <Text className="font-semibold text-[#191c1e]">Sip Habit</Text> in the widgets list.
-                </Text>
-              </View>
-
-              <View 
-                className="flex-row items-start gap-2.5 mb-2.5"
-              >
-                <View 
-                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                >
-                  <Text className="text-[10px] font-bold text-[#006875]">3</Text>
-                </View>
-                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                  Touch and hold the <Text className="font-semibold text-[#191c1e]">Sip Habit Progress</Text> widget, then drag it onto your screen.
-                </Text>
-              </View>
-
-              <View 
-                className="flex-row items-start gap-2.5"
-              >
-                <View 
-                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
-                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
-                >
-                  <Text className="text-[10px] font-bold text-[#006875]">4</Text>
-                </View>
-                <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
-                  Tap any of the logging buttons (<Text className="font-semibold text-[#006875]">+250</Text>, <Text className="font-semibold text-[#006875]">+500</Text>, <Text className="font-semibold text-[#006875]">+750</Text>) to record water instantly.
-                </Text>
-              </View>
+              ))}
             </View>
           )}
         </View>
@@ -443,20 +400,13 @@ export default function ProfileScreen() {
       >
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1 bg-black/50 justify-center items-center px-6"
+          style={{ flex: 1, backgroundColor: 'rgba(45, 52, 54, 0.55)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
         >
           <View 
-            className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] items-center"
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.3,
-              shadowRadius: 16,
-              elevation: 16,
-            }}
+            style={[sketchCard, { width: '100%', padding: 24, alignItems: 'center', borderRadius: 24 }]}
           >
             
-            <Text className="text-base font-bold text-[#006875] tracking-wide mb-6">
+            <Text style={{ fontSize: 15, fontWeight: '800', color: colors.charcoal, letterSpacing: 1, marginBottom: 24 }}>
               ENTER DAILY TARGET (ml)
             </Text>
 
@@ -465,25 +415,39 @@ export default function ProfileScreen() {
               onChangeText={setCustomGoalInput}
               keyboardType="number-pad"
               placeholder="e.g. 2750"
-              placeholderTextColor="#8a9cae"
+              placeholderTextColor={colors.mutedLight}
               autoFocus={true}
-              className="w-full text-center text-3xl font-extrabold text-[#001f24] py-3 bg-gray-50 rounded-2xl border border-gray-100 mb-6"
+              style={{
+                width: '100%',
+                textAlign: 'center',
+                fontSize: 28,
+                fontWeight: '900',
+                color: colors.charcoal,
+                paddingVertical: 12,
+                backgroundColor: colors.cream,
+                borderRadius: 16,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                marginBottom: 24,
+              }}
             />
 
             {/* Actions Buttons */}
-            <View className="flex-row gap-3 w-full">
+            <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
               <TouchableOpacity 
                 onPress={() => setShowGoalModal(false)}
-                className="flex-1 py-3 bg-[#eceef0] rounded-xl items-center"
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-bold text-[#3b494c]">CANCEL</Text>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.muted }}>CANCEL</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 onPress={handleCustomGoalSubmit}
-                className="flex-1 py-3 bg-[#006875] rounded-xl items-center"
+                style={[sketchButtonPrimary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
               >
-                <Text className="text-xs font-bold text-white">SAVE TARGET</Text>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.charcoal }}>SAVE TARGET</Text>
               </TouchableOpacity>
             </View>
 
