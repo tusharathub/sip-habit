@@ -280,13 +280,16 @@ export default function DashboardScreen() {
 
   const rotate1 = wave1Anim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['-28deg', '332deg'],
+    outputRange: ['0deg', '360deg'],
   });
 
   const rotate2 = wave2Anim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['-18deg', '342deg'],
+    outputRange: ['0deg', '-360deg'],
   });
+
+  const wave1Bottom = -490 + (percentage / 100) * 280;
+  const wave2Bottom = -470 + (percentage / 100) * 280;
 
   return (
     <KeyboardAvoidingView 
@@ -314,7 +317,7 @@ export default function DashboardScreen() {
 
       <ScrollView 
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 24 }}
+        contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 1 }}
       >
         {/* Visual Tracker Circle */}
         <View style={{ alignItems: 'center', marginVertical: 16 }}>
@@ -344,11 +347,12 @@ export default function DashboardScreen() {
             
             <Animated.View 
               style={{
-                height: `${percentage}%`,
-                width: '160%',
+                width: 460,
+                height: 460,
+                borderRadius: 185,
                 position: 'absolute',
-                bottom: 0,
-                left: '-30%',
+                bottom: wave2Bottom,
+                left: -90,
                 transform: [{ rotate: rotate2 }],
                 backgroundColor: colors.tealSoft,
               }}
@@ -356,11 +360,12 @@ export default function DashboardScreen() {
             
             <Animated.View 
               style={{
-                height: `${percentage}%`,
-                width: '160%',
+                width: 480,
+                height: 480,
+                borderRadius: 195,
                 position: 'absolute',
-                bottom: 0,
-                left: '-30%',
+                bottom: wave1Bottom,
+                left: -100,
                 transform: [{ rotate: rotate1 }],
                 backgroundColor: colors.teal,
               }}
@@ -391,7 +396,7 @@ export default function DashboardScreen() {
             </View>
           </View>
 
-          <View style={{ marginTop: 24, alignItems: 'center', paddingHorizontal: 16 }}>
+          <View style={{ marginTop: 8, alignItems: 'center', paddingHorizontal: 16 }}>
             <Text style={{ fontSize: 20, fontWeight: '800', color: colors.charcoal, marginBottom: 4 }}>
               {percentage >= 100 ? 'Goal Achieved! 🎉' : 'Stay Refreshed!'}
             </Text>
@@ -414,13 +419,13 @@ export default function DashboardScreen() {
         </View>
 
         {/* Navigation Call-To-Action */}
-        <View style={[sketchCard, { padding: 20, marginBottom: 20 }]}>
+        <View style={[sketchCard, { padding: 20, marginBottom: 10 }]}>
           <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
             TRACK INTAKE
           </Text>
-          <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 16, lineHeight: 18 }}>
+          {/* <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 16, lineHeight: 18 }}>
             Ready to log what you drank? Choose container presets or enter custom amounts.
-          </Text>
+          </Text> */}
           <TouchableOpacity 
             onPress={() => router.push('/log')}
             style={[sketchButtonPrimary, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14 }]}
@@ -433,7 +438,7 @@ export default function DashboardScreen() {
 
         {/* Reminders Bento Card (Multiple Reminders) */}
         <View style={[sketchCard, { padding: 20, marginBottom: 20 }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
             <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase' }}>
               DAILY REMINDERS
             </Text>
