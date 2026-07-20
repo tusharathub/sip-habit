@@ -7,6 +7,7 @@ export interface SettingsState {
   wakeTime: string;
   sleepTime: string;
   notificationsEnabled: boolean;
+  name: string;
 }
 
 const initialState: SettingsState = {
@@ -16,6 +17,7 @@ const initialState: SettingsState = {
   wakeTime: '08:00',
   sleepTime: '22:00',
   notificationsEnabled: true,
+  name: 'Hydration Hero',
 };
 
 export const settingsSlice = createSlice({

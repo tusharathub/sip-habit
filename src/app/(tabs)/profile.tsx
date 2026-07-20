@@ -24,15 +24,26 @@ export default function ProfileScreen() {
 
   // Fetch settings from Redux
   const settings = useAppSelector((state) => state.settings);
-  const { dailyGoal, weight, reminderInterval, notificationsEnabled } = settings;
+  const { dailyGoal, weight, reminderInterval, notificationsEnabled, name = 'Hydration Hero' } = settings;
 
   // Modal local state
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [customGoalInput, setCustomGoalInput] = useState('');
+  const [customNameInput, setCustomNameInput] = useState('');
   const [isHowToUseExpanded, setIsHowToUseExpanded] = useState(false);
   const [isWidgetGuideExpanded, setIsWidgetGuideExpanded] = useState(false);
   const [isWeightExpanded, setIsWeightExpanded] = useState(false);
+
+  // Handle updates
+  const handleCustomNameSubmit = () => {
+    if (customNameInput.trim().length > 0) {
+      dispatch(updateSettings({ name: customNameInput.trim() }));
+    }
+    setCustomNameInput('');
+    setShowNameModal(false);
+  };
 
   // Handle updates
   const adjustGoal = (amount: number) => {
@@ -114,7 +125,12 @@ export default function ProfileScreen() {
         contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20, paddingTop: 24 }}
       >
         {/* User Card */}
-        <View 
+        <TouchableOpacity 
+          onPress={() => {
+            setCustomNameInput(name);
+            setShowNameModal(true);
+          }}
+          activeOpacity={0.8}
           style={[sketchCard, { padding: 20, marginBottom: 14, flexDirection: 'row', alignItems: 'center', gap: 16 }]}
         >
           <View 
@@ -132,10 +148,13 @@ export default function ProfileScreen() {
             <Ionicons name="person" size={28} color={colors.charcoal} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 18, fontWeight: '800', color: colors.charcoal }}>Hydration Hero</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={{ fontSize: 18, fontWeight: '800', color: colors.charcoal }}>{name}</Text>
+              <Ionicons name="pencil" size={14} color={colors.muted} />
+            </View>
             <Text style={{ fontSize: 12, color: colors.muted, fontWeight: '600', marginTop: 2 }}>Stay healthy, stay refreshed</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Bento Card 1: Intake Goal Adjuster */}
         <View style={[sketchCard, { padding: 20, marginBottom: 14 }]}>
@@ -469,6 +488,69 @@ export default function ProfileScreen() {
                 activeOpacity={0.8}
               >
                 <Text style={{ fontSize: 12, fontWeight: '800', color: colors.charcoal }}>SAVE TARGET</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Custom Name Modal Dialog */}
+      <Modal
+        visible={showNameModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowNameModal(false)}
+      >
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1, backgroundColor: 'rgba(45, 52, 54, 0.55)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
+        >
+          <View 
+            style={[sketchCard, { width: '100%', padding: 24, alignItems: 'center', borderRadius: 24 }]}
+          >
+            
+            <Text style={{ fontSize: 15, fontWeight: '800', color: colors.charcoal, letterSpacing: 1, marginBottom: 24 }}>
+              ENTER YOUR NAME
+            </Text>
+
+            <TextInput
+              value={customNameInput}
+              onChangeText={setCustomNameInput}
+              placeholder="e.g. John Doe"
+              placeholderTextColor={colors.mutedLight}
+              autoFocus={true}
+              style={{
+                width: '100%',
+                textAlign: 'center',
+                fontSize: 22,
+                fontWeight: '900',
+                color: colors.charcoal,
+                paddingVertical: 12,
+                backgroundColor: colors.cream,
+                borderRadius: 16,
+                borderWidth: 2,
+                borderColor: colors.charcoal,
+                marginBottom: 24,
+              }}
+            />
+
+            {/* Actions Buttons */}
+            <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
+              <TouchableOpacity 
+                onPress={() => setShowNameModal(false)}
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.muted }}>CANCEL</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                onPress={handleCustomNameSubmit}
+                style={[sketchButtonPrimary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.charcoal }}>SAVE NAME</Text>
               </TouchableOpacity>
             </View>
 
