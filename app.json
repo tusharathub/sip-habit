@@ -18,7 +18,14 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.tusharatexpo.water"
+      "package": "com.tusharatexpo.water",
+      "enableProguardInReleaseBuilds": true,
+      "splits": {
+        "abi": {
+          "enable": true,
+          "universalApk": false
+        }
+      }
     },
     "web": {
       "output": "static",
