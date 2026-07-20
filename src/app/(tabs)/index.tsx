@@ -9,10 +9,9 @@ import {
   Platform,
   ScrollView,
   StatusBar,
-  Switch,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateWidgetData } from '../../../modules/water-widget';
@@ -168,7 +167,7 @@ export default function DashboardScreen() {
     Animated.loop(
       Animated.timing(wave1Anim, {
         toValue: 1,
-        duration: 8000,
+        duration: 5500,
         easing: Easing.linear,
         useNativeDriver: true,
       })
@@ -177,7 +176,7 @@ export default function DashboardScreen() {
     Animated.loop(
       Animated.timing(wave2Anim, {
         toValue: 1,
-        duration: 12000,
+        duration: 7000,
         easing: Easing.linear,
         useNativeDriver: true,
       })
