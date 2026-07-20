@@ -19,13 +19,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.tusharatexpo.water",
-      "enableProguardInReleaseBuilds": true,
-      "splits": {
-        "abi": {
-          "enable": true,
-          "universalApk": false
-        }
-      }
+      "enableProguardInReleaseBuilds": true
     },
     "web": {
       "output": "static",
@@ -34,6 +28,7 @@
     "plugins": [
       "expo-router",
       "./withAndroidWidget",
+      "./withAndroidSplits",
       [
         "expo-splash-screen",
         {
