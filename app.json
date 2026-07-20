@@ -18,8 +18,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.tusharatexpo.water",
-      "enableProguardInReleaseBuilds": true
+      "package": "com.tusharatexpo.water"
     },
     "web": {
       "output": "static",
@@ -28,13 +27,23 @@
     "plugins": [
       "expo-router",
       "./withAndroidWidget",
-      "./withAndroidSplits",
       [
         "expo-splash-screen",
         {
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "buildArchs": ["arm64-v8a"],
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "enableBundleCompression": true
+          }
         }
       ]
     ],
