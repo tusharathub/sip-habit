@@ -354,7 +354,7 @@ export default function ProfileScreen() {
                   
                   {[
                     'Set your weight above to calculate a recommended daily target, or customize it to your liking.',
-                    'On the main screen, select and tap a cup size to quickly log your water intake throughout the day.',
+                    'On the log screen, select and tap a cup size to quickly log your water intake throughout the day.',
                     'Check the History and Log tabs to view detailed statistics and charts of your hydration progress.',
                     'Enable reminders to receive periodic local notifications that keep you on track.',
                   ].map((text, i) => (

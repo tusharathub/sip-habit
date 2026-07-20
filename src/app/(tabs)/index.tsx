@@ -497,12 +497,32 @@ export default function DashboardScreen() {
                 </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Switch
-                    value={reminder.enabled}
-                    onValueChange={() => toggleReminder(reminder.id)}
-                    trackColor={{ false: colors.creamDark, true: colors.salmonLight }}
-                    thumbColor={reminder.enabled ? colors.charcoal : colors.mutedLight}
-                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => toggleReminder(reminder.id)}
+                    style={{
+                      width: 44,
+                      height: 24,
+                      borderRadius: 12,
+                      borderWidth: 2,
+                      borderColor: colors.charcoal,
+                      backgroundColor: reminder.enabled ? colors.salmon : colors.cream,
+                      justifyContent: 'center',
+                      paddingHorizontal: 2,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: 8,
+                        borderWidth: 1.5,
+                        borderColor: colors.charcoal,
+                        backgroundColor: colors.creamLight,
+                        alignSelf: reminder.enabled ? 'flex-end' : 'flex-start',
+                      }}
+                    />
+                  </TouchableOpacity>
                   <TouchableOpacity 
                     onPress={() => deleteReminder(reminder.id)}
                     style={{ padding: 4 }}
@@ -543,7 +563,7 @@ export default function DashboardScreen() {
           <TouchableOpacity 
             activeOpacity={1}
             onPress={() => setShowTimePicker(false)}
-            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(45, 52, 54, 0.55)' }}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
           />
 
           <View 
