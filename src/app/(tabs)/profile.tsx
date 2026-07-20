@@ -28,9 +28,11 @@ export default function ProfileScreen() {
 
   // Modal local state
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
   const [customGoalInput, setCustomGoalInput] = useState('');
   const [isHowToUseExpanded, setIsHowToUseExpanded] = useState(false);
   const [isWidgetGuideExpanded, setIsWidgetGuideExpanded] = useState(false);
+  const [isWeightExpanded, setIsWeightExpanded] = useState(false);
 
   // Handle updates
   const adjustGoal = (amount: number) => {
@@ -64,6 +66,7 @@ export default function ProfileScreen() {
   const handleReset = () => {
     dispatch(resetSettings());
     dispatch(resetHydration());
+    setShowResetModal(false);
   };
 
   // Recommended Hydration logic: 35ml per kg of body weight
@@ -91,7 +94,7 @@ export default function ProfileScreen() {
           <Text style={{ fontSize: 22, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>Sip Habit</Text>
         </View>
         <TouchableOpacity 
-          onPress={handleReset}
+          onPress={() => setShowResetModal(true)}
           style={{
             paddingHorizontal: 12,
             paddingVertical: 6,
@@ -190,61 +193,79 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Bento Card 2: Body Parameters (Weight Adjuster) */}
-        <View style={[sketchCard, { padding: 20, marginBottom: 14 }]}>
-          <Text style={{ fontSize: 10, fontWeight: '800', color: colors.muted, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            BODY WEIGHT PARAMETER
-          </Text>
-
-          <View style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, marginBottom: 12 }]}>
-            <TouchableOpacity 
-              onPress={() => adjustWeight(-5)}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: colors.cream,
-                borderWidth: 2,
-                borderColor: colors.charcoal,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="remove" size={20} color={colors.charcoal} />
-            </TouchableOpacity>
-            
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 24, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>{weight} kg</Text>
-              <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, textTransform: 'uppercase', marginTop: 2 }}>CURRENT WEIGHT</Text>
-            </View>
-
-            <TouchableOpacity 
-              onPress={() => adjustWeight(5)}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: colors.cream,
-                borderWidth: 2,
-                borderColor: colors.charcoal,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="add" size={20} color={colors.charcoal} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={[sketchCardInner, { padding: 14, flexDirection: 'row', alignItems: 'flex-start', gap: 12 }]}>
-            <Ionicons name="bulb" size={18} color={colors.teal} style={{ marginTop: 1 }} />
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 11, color: colors.muted, lineHeight: 17 }}>
-                Ideal daily hydration is calculated at 35ml per kg of body weight. For you, the recommended target is <Text style={{ fontWeight: '800', color: colors.teal }}>{recommendedIntake}ml</Text>.
+        {/* Bento Card 2: Body Parameters (Weight Adjuster - Collapsible) */}
+        <View style={[sketchCard, { marginBottom: 14, overflow: 'hidden', padding: 0 }]}>
+          <TouchableOpacity 
+            onPress={() => setIsWeightExpanded(!isWeightExpanded)}
+            activeOpacity={0.7}
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Ionicons name="fitness-outline" size={22} color={colors.teal} />
+              <Text style={{ fontSize: 13, fontWeight: '800', color: colors.charcoal, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                Body Weight Parameter
               </Text>
             </View>
-          </View>
+            <Ionicons 
+              name={isWeightExpanded ? "chevron-up" : "chevron-down"} 
+              size={20} 
+              color={colors.charcoal} 
+            />
+          </TouchableOpacity>
+
+          {isWeightExpanded && (
+            <View style={{ paddingHorizontal: 20, paddingBottom: 20, borderTopWidth: 1.5, borderTopColor: colors.borderLight, paddingTop: 16 }}>
+              <View style={[sketchCardInner, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, marginBottom: 12 }]}>
+                <TouchableOpacity 
+                  onPress={() => adjustWeight(-5)}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: colors.cream,
+                    borderWidth: 2,
+                    borderColor: colors.charcoal,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="remove" size={20} color={colors.charcoal} />
+                </TouchableOpacity>
+                
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ fontSize: 24, fontWeight: '900', color: colors.charcoal, letterSpacing: -0.5 }}>{weight} kg</Text>
+                  <Text style={{ fontSize: 9, fontWeight: '800', color: colors.muted, textTransform: 'uppercase', marginTop: 2 }}>CURRENT WEIGHT</Text>
+                </View>
+
+                <TouchableOpacity 
+                  onPress={() => adjustWeight(5)}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: colors.cream,
+                    borderWidth: 2,
+                    borderColor: colors.charcoal,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="add" size={20} color={colors.charcoal} />
+                </TouchableOpacity>
+              </View>
+
+              <View style={[sketchCardInner, { padding: 14, flexDirection: 'row', alignItems: 'flex-start', gap: 12 }]}>
+                <Ionicons name="bulb" size={18} color={colors.teal} style={{ marginTop: 1 }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 11, color: colors.muted, lineHeight: 17 }}>
+                    Ideal daily hydration is calculated at 35ml per kg of body weight. For you, the recommended target is <Text style={{ fontWeight: '800', color: colors.teal }}>{recommendedIntake}ml</Text>.
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
         </View>
 
         {/* Bento Card 3: How to Use & Privacy (Collapsible Accordion) */}
@@ -448,6 +469,65 @@ export default function ProfileScreen() {
                 activeOpacity={0.8}
               >
                 <Text style={{ fontSize: 12, fontWeight: '800', color: colors.charcoal }}>SAVE TARGET</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Reset Confirmation Modal */}
+      <Modal
+        visible={showResetModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowResetModal(false)}
+      >
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1, backgroundColor: 'rgba(45, 52, 54, 0.55)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}
+        >
+          <View 
+            style={[sketchCard, { width: '100%', padding: 24, alignItems: 'center', borderRadius: 24 }]}
+          >
+            <View style={{
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.dangerBg,
+              borderWidth: 2.5,
+              borderColor: colors.danger,
+              marginBottom: 16,
+            }}>
+              <Ionicons name="alert-triangle-outline" size={32} color={colors.danger} />
+            </View>
+
+            <Text style={{ fontSize: 16, fontWeight: '800', color: colors.charcoal, letterSpacing: 0.5, marginBottom: 12 }}>
+              Reset Settings & Data?
+            </Text>
+
+            <Text style={{ fontSize: 12, color: colors.muted, lineHeight: 18, textAlign: 'center', marginBottom: 24 }}>
+              This action will reset your daily goal target, body weight parameter, clear all logged water entries, and delete your active daily reminders. This cannot be undone.
+            </Text>
+
+            {/* Actions Buttons */}
+            <View style={{ flexDirection: 'row', gap: 12, width: '100%' }}>
+              <TouchableOpacity 
+                onPress={() => setShowResetModal(false)}
+                style={[sketchButtonSecondary, { flex: 1, paddingVertical: 12, alignItems: 'center' }]}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.muted }}>CANCEL</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                onPress={handleReset}
+                style={[sketchButtonPrimary, { flex: 1, paddingVertical: 12, alignItems: 'center', backgroundColor: colors.danger, borderColor: colors.charcoal }]}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 12, fontWeight: '800', color: colors.white }}>CONFIRM RESET</Text>
               </TouchableOpacity>
             </View>
 
