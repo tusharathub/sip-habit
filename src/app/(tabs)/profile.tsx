@@ -83,7 +83,8 @@ export default function ProfileScreen() {
         </View>
         <TouchableOpacity 
           onPress={handleReset}
-          className="bg-[#ef4444]/10 px-3 py-1.5 rounded-full active:scale-95"
+          className="px-3 py-1.5 rounded-full active:scale-95"
+          style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
         >
           <Text className="text-[10px] font-bold text-[#ef4444] uppercase tracking-wider">RESET</Text>
         </TouchableOpacity>
@@ -95,8 +96,20 @@ export default function ProfileScreen() {
         className="px-5 pt-6"
       >
         {/* User Card */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 flex-row items-center gap-4 shadow-sm">
-          <View className="w-14 h-14 rounded-full bg-[#006875]/15 items-center justify-center">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 flex-row items-center gap-4"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
+          <View 
+            className="w-14 h-14 rounded-full items-center justify-center"
+            style={{ backgroundColor: 'rgba(0, 104, 117, 0.15)' }}
+          >
             <Ionicons name="person" size={28} color="#006875" />
           </View>
           <View className="flex-1">
@@ -106,7 +119,16 @@ export default function ProfileScreen() {
         </View>
 
         {/* Bento Card 1: Intake Goal Adjuster */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-4">
             DAILY INTAKE GOAL
           </Text>
@@ -134,14 +156,27 @@ export default function ProfileScreen() {
 
           <TouchableOpacity 
             onPress={() => setShowGoalModal(true)}
-            className="w-full py-3 bg-[#006875]/10 border border-[#006875]/10 rounded-2xl items-center active:scale-95"
+            className="w-full py-3 border rounded-2xl items-center active:scale-95"
+            style={{
+              backgroundColor: 'rgba(0, 104, 117, 0.1)',
+              borderColor: 'rgba(0, 104, 117, 0.1)',
+            }}
           >
             <Text className="text-xs font-bold text-[#006875] uppercase tracking-wider">Set Custom Goal</Text>
           </TouchableOpacity>
         </View>
 
         {/* Bento Card 2: Body Parameters (Weight Adjuster) */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3 shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-3"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-4">
             BODY WEIGHT PARAMETER
           </Text>
@@ -178,7 +213,16 @@ export default function ProfileScreen() {
         </View>
 
         {/* Bento Card 3: How to Use & Privacy (Collapsible Accordion) */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl mb-3 shadow-sm overflow-hidden">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl mb-3 overflow-hidden"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <TouchableOpacity 
             onPress={() => setIsHowToUseExpanded(!isHowToUseExpanded)}
             activeOpacity={0.7}
@@ -203,8 +247,13 @@ export default function ProfileScreen() {
               <View className="mb-4">
                 <Text className="text-sm font-bold text-[#191c1e] mb-3">Quick Guide</Text>
                 
-                <View className="flex-row items-start gap-2.5 mb-2.5">
-                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                <View 
+                  className="flex-row items-start gap-2.5 mb-2.5"
+                >
+                  <View 
+                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                  >
                     <Text className="text-[10px] font-bold text-[#006875]">1</Text>
                   </View>
                   <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -212,8 +261,13 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="flex-row items-start gap-2.5 mb-2.5">
-                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                <View 
+                  className="flex-row items-start gap-2.5 mb-2.5"
+                >
+                  <View 
+                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                  >
                     <Text className="text-[10px] font-bold text-[#006875]">2</Text>
                   </View>
                   <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -221,8 +275,13 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="flex-row items-start gap-2.5 mb-2.5">
-                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                <View 
+                  className="flex-row items-start gap-2.5 mb-2.5"
+                >
+                  <View 
+                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                  >
                     <Text className="text-[10px] font-bold text-[#006875]">3</Text>
                   </View>
                   <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -230,8 +289,13 @@ export default function ProfileScreen() {
                   </Text>
                 </View>
 
-                <View className="flex-row items-start gap-2.5">
-                  <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+                <View 
+                  className="flex-row items-start gap-2.5"
+                >
+                  <View 
+                    className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                    style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                  >
                     <Text className="text-[10px] font-bold text-[#006875]">4</Text>
                   </View>
                   <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -276,7 +340,16 @@ export default function ProfileScreen() {
         </View>
 
         {/* Bento Card 4: How to Add & Use Widget */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl mb-5 shadow-sm overflow-hidden">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl mb-5 overflow-hidden"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <TouchableOpacity 
             onPress={() => setIsWidgetGuideExpanded(!isWidgetGuideExpanded)}
             activeOpacity={0.7}
@@ -301,8 +374,13 @@ export default function ProfileScreen() {
                 Track your daily progress and log drinks directly from your device home screen:
               </Text>
 
-              <View className="flex-row items-start gap-2.5 mb-2.5">
-                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+              <View 
+                className="flex-row items-start gap-2.5 mb-2.5"
+              >
+                <View 
+                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                >
                   <Text className="text-[10px] font-bold text-[#006875]">1</Text>
                 </View>
                 <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -310,8 +388,13 @@ export default function ProfileScreen() {
                 </Text>
               </View>
 
-              <View className="flex-row items-start gap-2.5 mb-2.5">
-                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+              <View 
+                className="flex-row items-start gap-2.5 mb-2.5"
+              >
+                <View 
+                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                >
                   <Text className="text-[10px] font-bold text-[#006875]">2</Text>
                 </View>
                 <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -319,8 +402,13 @@ export default function ProfileScreen() {
                 </Text>
               </View>
 
-              <View className="flex-row items-start gap-2.5 mb-2.5">
-                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+              <View 
+                className="flex-row items-start gap-2.5 mb-2.5"
+              >
+                <View 
+                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                >
                   <Text className="text-[10px] font-bold text-[#006875]">3</Text>
                 </View>
                 <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -328,8 +416,13 @@ export default function ProfileScreen() {
                 </Text>
               </View>
 
-              <View className="flex-row items-start gap-2.5">
-                <View className="w-5 h-5 rounded-full bg-[#006875]/10 items-center justify-center mt-0.5">
+              <View 
+                className="flex-row items-start gap-2.5"
+              >
+                <View 
+                  className="w-5 h-5 rounded-full items-center justify-center mt-0.5"
+                  style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+                >
                   <Text className="text-[10px] font-bold text-[#006875]">4</Text>
                 </View>
                 <Text className="text-xs text-[#3b494c] flex-1 leading-relaxed">
@@ -352,7 +445,16 @@ export default function ProfileScreen() {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1 bg-black/50 justify-center items-center px-6"
         >
-          <View className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] shadow-2xl items-center">
+          <View 
+            className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] items-center"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.3,
+              shadowRadius: 16,
+              elevation: 16,
+            }}
+          >
             
             <Text className="text-base font-bold text-[#006875] tracking-wide mb-6">
               ENTER DAILY TARGET (ml)

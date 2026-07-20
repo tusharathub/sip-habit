@@ -122,7 +122,16 @@ export default function HistoryScreen() {
         </View>
 
         {/* Main Analytics Card (Weekly Overview) */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <View className="flex-row justify-between items-end mb-6">
             <View>
               <Text className="text-[10px] font-bold text-[#546A7E] tracking-widest uppercase mb-1">
@@ -132,7 +141,10 @@ export default function HistoryScreen() {
                 Avg. {averageIntakeL}L Daily
               </Text>
             </View>
-            <View className="bg-[#00e5ff]/15 px-3 py-1 rounded-full border border-[#006875]/10">
+            <View 
+              className="bg-[#00e5ff]/15 px-3 py-1 rounded-full border"
+              style={{ borderColor: 'rgba(0, 104, 117, 0.1)' }}
+            >
               <Text className="text-xs font-bold text-[#006875]">
                 GOAL: {(dailyGoal / 1000).toFixed(1)}L
               </Text>
@@ -153,8 +165,11 @@ export default function HistoryScreen() {
                   {/* Bar outline */}
                   <View 
                     className={`w-full rounded-t-full relative overflow-hidden h-[80%] flex-col justify-end border ${
-                      isSelected ? 'border-[#006875] bg-[#00e5ff]/5' : 'border-transparent bg-[#eceef0]'
+                      isSelected ? 'border-[#006875]' : 'border-transparent bg-[#eceef0]'
                     }`}
+                    style={{
+                      backgroundColor: isSelected ? 'rgba(0, 229, 255, 0.05)' : '#eceef0',
+                    }}
                   >
                     {/* Liquid fill representing percentage */}
                     <View 
@@ -194,7 +209,16 @@ export default function HistoryScreen() {
         {/* Bento Insights Cards Row */}
         <View className="flex-row gap-4 mb-5">
           {/* Streak Card */}
-          <View className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-row items-center gap-3.5 shadow-sm">
+          <View 
+            className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-row items-center gap-3.5"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
+          >
             <View className="w-12 h-12 rounded-2xl bg-[#d5e3ff] items-center justify-center">
               <Ionicons name="trophy" size={24} color="#001B3C" />
             </View>
@@ -207,9 +231,18 @@ export default function HistoryScreen() {
               </Text>
             </View>
           </View>
-
+ 
           {/* Weekday Streak Fire Card */}
-          <View className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-col justify-between shadow-sm">
+          <View 
+            className="flex-1 bg-white border border-[#eceef0] rounded-3xl p-4 flex-col justify-between"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
+          >
             <Text className="text-[9px] font-bold text-[#8a9cae] tracking-widest uppercase mb-2">
               WEEKLY TARGETS
             </Text>
@@ -231,9 +264,18 @@ export default function HistoryScreen() {
             </View>
           </View>
         </View>
-
+ 
         {/* Daily Logs list */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <Text className="text-sm font-bold text-[#191c1e] mb-4">Daily Summary Logs</Text>
           
           <View className="space-y-4">
@@ -246,9 +288,10 @@ export default function HistoryScreen() {
                 >
                   <View className="flex-row items-center gap-3.5">
                     {/* Status Badge Icon */}
-                    <View className={`w-10 h-10 rounded-full items-center justify-center ${
-                      isGoalMet ? 'bg-[#00e5ff]/20' : 'bg-[#eceef0]'
-                    }`}>
+                    <View 
+                      className="w-10 h-10 rounded-full items-center justify-center"
+                      style={{ backgroundColor: isGoalMet ? 'rgba(0, 229, 255, 0.2)' : '#eceef0' }}
+                    >
                       <Ionicons 
                         name={isGoalMet ? 'checkmark' : 'close'} 
                         size={18} 
@@ -266,9 +309,10 @@ export default function HistoryScreen() {
                     </View>
                   </View>
 
-                  <View className={`px-2.5 py-1 rounded-lg ${
-                    isGoalMet ? 'bg-[#006875]/10' : 'bg-gray-100'
-                  }`}>
+                  <View 
+                    className="px-2.5 py-1 rounded-lg"
+                    style={{ backgroundColor: isGoalMet ? 'rgba(0, 104, 117, 0.1)' : '#f3f4f6' }}
+                  >
                     <Text className={`text-[9px] font-bold uppercase tracking-widest ${
                       isGoalMet ? 'text-[#006875]' : 'text-[#8a9cae]'
                     }`}>
@@ -282,7 +326,16 @@ export default function HistoryScreen() {
         </View>
 
         {/* Healthy Tip Card */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 relative overflow-hidden shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 relative overflow-hidden"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <View className="z-10 max-w-[85%]">
             <Text className="text-base font-bold text-[#006875] mb-1">Healthy Tip</Text>
             <Text className="text-xs text-[#3b494c] leading-relaxed italic">

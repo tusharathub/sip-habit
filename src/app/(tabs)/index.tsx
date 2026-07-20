@@ -25,6 +25,8 @@ import { cancelReminderNotification, scheduleDailyReminder } from '../../utils/n
 import { useToast } from '../../components/Toast';
 
 
+
+
 // Reusable Snapping Scroll Picker (Mimics iOS Native Wheel Picker with Infinite Loop)
 interface ScrollPickerProps {
   items: string[];
@@ -140,6 +142,8 @@ export default function DashboardScreen() {
   const todayIntake = useAppSelector((state) => state.hydration.todayIntake);
   const dailyGoal = useAppSelector((state) => state.settings.dailyGoal);
   const streak = useAppSelector((state) => state.hydration.streak);
+
+
 
   // Reminders Redux State
   const reminders = useAppSelector((state) => state.reminders.list);
@@ -305,7 +309,16 @@ export default function DashboardScreen() {
       >
         {/* Visual Tracker Circle */}
         <View className="items-center my-4">
-          <View className="w-72 h-72 rounded-full border border-white/50 bg-[#e6e8ea]/20 relative items-center justify-center overflow-hidden shadow-xl shadow-cyan-500/10">
+          <View 
+            className="w-72 h-72 rounded-full border border-white/50 bg-[#e6e8ea]/20 relative items-center justify-center overflow-hidden"
+            style={{
+              shadowColor: '#00e5ff',
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.1,
+              shadowRadius: 20,
+              elevation: 10,
+            }}
+          >
             
             <Animated.View 
               style={{
@@ -331,7 +344,16 @@ export default function DashboardScreen() {
               }}
             />
 
-            <View className="z-10 items-center justify-center bg-white/75 w-[84%] h-[84%] rounded-full border border-white/90 shadow-md">
+            <View 
+              className="z-10 items-center justify-center bg-white/75 w-[84%] h-[84%] rounded-full border border-white/90"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            >
               <Text className="text-[10px] font-bold text-[#00626e] tracking-wider uppercase mb-1">
                 CURRENTLY AT
               </Text>
@@ -354,7 +376,10 @@ export default function DashboardScreen() {
                 : `You're doing great. Just ${remaining}ml left to reach your daily goal.`}
             </Text>
             {streak > 0 && (
-              <View className="flex-row items-center gap-1 mt-2 bg-[#d5e3ff] px-3 py-1 rounded-full border border-[#006875]/10">
+              <View 
+                className="flex-row items-center gap-1 mt-2 bg-[#d5e3ff] px-3 py-1 rounded-full border"
+                style={{ borderColor: 'rgba(0, 104, 117, 0.1)' }}
+              >
                 <Ionicons name="flame" size={14} color="#006875" />
                 <Text className="text-xs font-bold text-[#006875]">
                   {streak} DAY STREAK
@@ -365,7 +390,16 @@ export default function DashboardScreen() {
         </View>
 
         {/* Navigation Call-To-Action */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase mb-2">
             TRACK INTAKE
           </Text>
@@ -374,7 +408,14 @@ export default function DashboardScreen() {
           </Text>
           <TouchableOpacity 
             onPress={() => router.push('/log')}
-            className="bg-[#006875] flex-row items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-95 shadow-sm"
+            className="bg-[#006875] flex-row items-center justify-center gap-2 py-3.5 rounded-2xl active:scale-95"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
           >
             <Ionicons name="add" size={20} color="white" />
             <Text className="text-sm font-bold text-white uppercase tracking-wider">Log Intake Screen</Text>
@@ -382,14 +423,24 @@ export default function DashboardScreen() {
         </View>
 
         {/* Reminders Bento Card (Multiple Reminders) */}
-        <View className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5 shadow-sm">
+        <View 
+          className="bg-white border border-[#eceef0] rounded-3xl p-5 mb-5"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <View className="flex-row items-center justify-between mb-4">
             <Text className="text-xs font-bold text-[#006875] tracking-widest uppercase">
               DAILY REMINDERS
             </Text>
             <TouchableOpacity 
               onPress={openTimePicker}
-              className="w-7 h-7 rounded-full bg-[#006875]/10 items-center justify-center active:scale-95"
+              className="w-7 h-7 rounded-full items-center justify-center active:scale-95"
+              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
             >
               <Ionicons name="add" size={18} color="#006875" />
             </TouchableOpacity>
@@ -403,9 +454,12 @@ export default function DashboardScreen() {
                 className="flex-row items-center justify-between p-3 rounded-2xl bg-[#F7F9FB] border border-[#eceef0]"
               >
                 <View className="flex-row items-center gap-3">
-                  <View className={`w-9 h-9 rounded-xl items-center justify-center ${
-                    reminder.enabled ? 'bg-[#00e5ff]/20' : 'bg-gray-200'
-                  }`}>
+                  <View 
+                    className="w-9 h-9 rounded-xl items-center justify-center"
+                    style={{
+                      backgroundColor: reminder.enabled ? 'rgba(0, 229, 255, 0.2)' : '#e5e7eb',
+                    }}
+                  >
                     <Ionicons 
                       name="alarm" 
                       size={18} 
@@ -439,7 +493,16 @@ export default function DashboardScreen() {
         </View>
 
         {/* Hydration Tip Card */}
-        <View className="rounded-3xl overflow-hidden h-40 shadow-sm">
+        <View 
+          className="rounded-3xl overflow-hidden h-40"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <ImageBackground
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB8IQasSEfxUZM8fElXgFTQr39jl9jNf2c1hSDSc93mGwr1owkSVmkUj2sHZywcVGBIe4cQ7nuHR0wa2dex0W8GnHiXVfFdo1epAoDchPP4ZRFx6QdDEfdKtPUpwcDSzihFHZF6QHZDTac0b-OlEJ8JUqtgKTGZJsRspT11t858pX4YAww43kMbI88nlW-XJpZoVKKSVj5_1Pv-32TMYFW0NZLi7FkWwfk0kS8VZlPdqm6Vj1j5lkICzZEpddnpQwQ2fuj_SUpjj2c' }}
             className="w-full h-full justify-end"
@@ -470,7 +533,16 @@ export default function DashboardScreen() {
             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.55)' }}
           />
 
-          <View className="bg-white w-full rounded-[32px] p-6 border border-[#eceef0] shadow-2xl items-center pb-8 z-10">
+          <View 
+            className="bg-white w-full rounded-[32px] p-6 border border-[#eceef0] items-center pb-8 z-10"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.3,
+              shadowRadius: 16,
+              elevation: 16,
+            }}
+          >
             
             {/* Drag handle decorator */}
             <View className="w-10 h-1 bg-gray-200 rounded-full mb-5" />
@@ -508,8 +580,8 @@ export default function DashboardScreen() {
               
               {/* Highlight center bar indicator overlay */}
               <View 
-                style={{ height: 50, top: 50 }}
-                className="absolute left-4 right-4 border-y border-[#006875]/15 pointer-events-none"
+                style={{ height: 50, top: 50, borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'rgba(0, 104, 117, 0.15)' }}
+                className="absolute left-4 right-4 pointer-events-none"
               />
 
               {/* Left scale ruler ticks */}

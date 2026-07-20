@@ -120,13 +120,24 @@ export default function LogScreen() {
               setSelectedContainer('cup');
               setSelectedAmount(250);
             }}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center shadow-sm ${
+            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
               selectedContainer === 'cup' 
-                ? 'border-[#006875] bg-[#00e5ff]/5' 
+                ? 'border-[#006875]' 
                 : 'border-[#eceef0]'
             }`}
+            style={{
+              backgroundColor: selectedContainer === 'cup' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
           >
-            <View className="w-14 h-14 rounded-full bg-[#006875]/10 items-center justify-center mb-3">
+            <View 
+              className="w-14 h-14 rounded-full items-center justify-center mb-3"
+              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+            >
               <Ionicons name="cafe-outline" size={28} color="#006875" />
             </View>
             <Text className="text-base font-bold text-[#006875]">Cup</Text>
@@ -139,13 +150,24 @@ export default function LogScreen() {
               setSelectedContainer('bottle');
               setSelectedAmount(500);
             }}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center shadow-sm ${
+            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
               selectedContainer === 'bottle' 
-                ? 'border-[#006875] bg-[#00e5ff]/5' 
+                ? 'border-[#006875]' 
                 : 'border-[#eceef0]'
             }`}
+            style={{
+              backgroundColor: selectedContainer === 'bottle' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
           >
-            <View className="w-14 h-14 rounded-full bg-[#006875]/10 items-center justify-center mb-3">
+            <View 
+              className="w-14 h-14 rounded-full items-center justify-center mb-3"
+              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+            >
               <Ionicons name="water-outline" size={28} color="#006875" />
             </View>
             <Text className="text-base font-bold text-[#006875]">Bottle</Text>
@@ -158,13 +180,24 @@ export default function LogScreen() {
               setSelectedContainer('large');
               setSelectedAmount(1000);
             }}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center shadow-sm ${
+            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
               selectedContainer === 'large' 
-                ? 'border-[#006875] bg-[#00e5ff]/5' 
+                ? 'border-[#006875]' 
                 : 'border-[#eceef0]'
             }`}
+            style={{
+              backgroundColor: selectedContainer === 'large' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
           >
-            <View className="w-14 h-14 rounded-full bg-[#006875]/10 items-center justify-center mb-3">
+            <View 
+              className="w-14 h-14 rounded-full items-center justify-center mb-3"
+              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+            >
               <Ionicons name="beer-outline" size={28} color="#006875" />
             </View>
             <Text className="text-base font-bold text-[#006875]">Large</Text>
@@ -174,13 +207,24 @@ export default function LogScreen() {
           {/* Custom */}
           <TouchableOpacity 
             onPress={() => setShowCustomModal(true)}
-            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center shadow-sm ${
+            className={`w-[47%] p-5 rounded-3xl bg-white border items-center justify-center ${
               selectedContainer === 'custom' 
-                ? 'border-[#006875] bg-[#00e5ff]/5' 
+                ? 'border-[#006875]' 
                 : 'border-[#eceef0]'
             }`}
+            style={{
+              backgroundColor: selectedContainer === 'custom' ? 'rgba(0, 229, 255, 0.05)' : '#FFFFFF',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.05,
+              shadowRadius: 2,
+              elevation: 1,
+            }}
           >
-            <View className="w-14 h-14 rounded-full bg-[#006875]/10 items-center justify-center mb-3">
+            <View 
+              className="w-14 h-14 rounded-full items-center justify-center mb-3"
+              style={{ backgroundColor: 'rgba(0, 104, 117, 0.1)' }}
+            >
               <Ionicons name="create-outline" size={28} color="#006875" />
             </View>
             <Text className="text-base font-bold text-[#006875]">Custom</Text>
@@ -192,7 +236,16 @@ export default function LogScreen() {
         </View>
 
         {/* Quick Adjust Control */}
-        <View className="flex-row items-center justify-between bg-white border border-[#eceef0] rounded-full px-5 py-3 mb-4 shadow-sm">
+        <View 
+          className="flex-row items-center justify-between bg-white border border-[#eceef0] rounded-full px-5 py-3 mb-4"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 2,
+            elevation: 1,
+          }}
+        >
           <Text className="text-sm font-semibold text-[#3b494c]">Quick Adjust:</Text>
           <View className="flex-row gap-2">
             <TouchableOpacity 
@@ -214,7 +267,14 @@ export default function LogScreen() {
         {/* Inline Add Water Button (Directly below Quick Adjust) */}
         <TouchableOpacity 
           onPress={handleAddWater}
-          className="bg-[#006875] w-full h-14 rounded-full flex-row items-center justify-center gap-2 active:scale-95 shadow-md mb-8"
+          className="bg-[#006875] w-full h-14 rounded-full flex-row items-center justify-center gap-2 active:scale-95 mb-8"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 3,
+          }}
         >
           <Ionicons name="add" size={20} color="white" />
           <Text className="text-base font-bold text-white uppercase tracking-wider">
@@ -232,8 +292,17 @@ export default function LogScreen() {
           </View>
 
           {todayLogs.length === 0 ? (
-            <View className="bg-white border border-[#eceef0] rounded-3xl p-8 items-center justify-center shadow-sm">
-              <Ionicons name="beer-outline" size={32} color="#8a9cae" className="opacity-55 mb-2" />
+            <View 
+              className="bg-white border border-[#eceef0] rounded-3xl p-8 items-center justify-center"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.05,
+                shadowRadius: 2,
+                elevation: 1,
+              }}
+            >
+              <Ionicons name="beer-outline" size={32} color="#8a9cae" style={{ opacity: 0.55, marginBottom: 8 }} />
               <Text className="text-sm text-[#8a9cae] font-semibold text-center">No water logged today yet.</Text>
             </View>
           ) : (
@@ -241,10 +310,20 @@ export default function LogScreen() {
               {todayLogs.map((log) => (
                 <View 
                   key={log.id}
-                  className="bg-white border border-[#eceef0] p-4 rounded-2xl flex-row items-center justify-between shadow-sm"
+                  className="bg-white border border-[#eceef0] p-4 rounded-2xl flex-row items-center justify-between"
+                  style={{
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 2,
+                    elevation: 1,
+                  }}
                 >
                   <View className="flex-row items-center gap-4">
-                    <View className="w-10 h-10 rounded-full bg-[#00e5ff]/15 items-center justify-center">
+                    <View 
+                      className="w-10 h-10 rounded-full items-center justify-center"
+                      style={{ backgroundColor: 'rgba(0, 229, 255, 0.15)' }}
+                    >
                       <Ionicons name="water" size={18} color="#006875" />
                     </View>
                     <View>
@@ -286,7 +365,16 @@ export default function LogScreen() {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1 bg-black/50 justify-center items-center px-6"
         >
-          <View className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] shadow-2xl items-center">
+          <View 
+            className="bg-white w-full rounded-3xl p-6 border border-[#eceef0] items-center"
+            style={{
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.3,
+              shadowRadius: 16,
+              elevation: 16,
+            }}
+          >
             
             <Text className="text-base font-bold text-[#006875] tracking-wide mb-6">
               ENTER CUSTOM AMOUNT
