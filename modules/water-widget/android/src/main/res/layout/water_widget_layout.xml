@@ -4,15 +4,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:drawable/dialog_holo_light_frame"
+    android:background="@drawable/widget_background"
     android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/widget_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="💧 Sip Habit"
-        android:textColor="#004D40"
+        android:text="🍑 Sip Habit"
+        android:textColor="#2D3436"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginBottom="4dp" />
@@ -22,8 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Currently: 0% (0 / 2500ml)"
-        android:textColor="#00796B"
-        android:textSize="14sp"
+        android:textColor="#4A4E50"
+        android:textSize="13sp"
         android:layout_marginBottom="12dp" />
 
     <LinearLayout
@@ -32,37 +32,49 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <Button
+        <TextView
             android:id="@+id/btn_add_250"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_weight="1"
             android:text="+250"
             android:textSize="12sp"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="#006875"
-            android:textColor="#FFFFFF" />
+            android:textStyle="bold"
+            android:textColor="#2D3436"
+            android:gravity="center"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_button_background"
+            android:focusable="true"
+            android:clickable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_add_500"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_weight="1"
             android:text="+500"
             android:textSize="12sp"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="#006875"
-            android:textColor="#FFFFFF" />
+            android:textStyle="bold"
+            android:textColor="#2D3436"
+            android:gravity="center"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/widget_button_background"
+            android:focusable="true"
+            android:clickable="true" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_add_750"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_weight="1"
             android:text="+750"
             android:textSize="12sp"
-            android:backgroundTint="#006875"
-            android:textColor="#FFFFFF" />
+            android:textStyle="bold"
+            android:textColor="#2D3436"
+            android:gravity="center"
+            android:background="@drawable/widget_button_background"
+            android:focusable="true"
+            android:clickable="true" />
 
     </LinearLayout>
 
