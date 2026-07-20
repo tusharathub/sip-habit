@@ -13,6 +13,8 @@ interface HydrationState {
     todayIntake: number;
     streak: number;
     lastLoggedDate: string | null; // YYYY-MM-DD
+    lastCelebratedDate: string | null; // YYYY-MM-DD
+    showCelebration: boolean;
 }
 
 const initialState: HydrationState = {
@@ -20,6 +22,8 @@ const initialState: HydrationState = {
     todayIntake: 0,
     streak: 0,
     lastLoggedDate: null,
+    lastCelebratedDate: null,
+    showCelebration: false,
 };
 
 const isToday = (dateString: string) => {
@@ -51,6 +55,13 @@ export const hydrationSlice = createSlice({
             state.logs.unshift(newLog);
 
             state.todayIntake += action.payload.amount;
+
+            // Trigger celebration if goal is reached today
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (state.todayIntake >= action.payload.dailyGoal && state.lastCelebratedDate !== todayStr) {
+                state.lastCelebratedDate = todayStr;
+                state.showCelebration = true;
+            }
         },
 
         removeDrink: (state, action: PayloadAction<string>) => {
@@ -93,7 +104,23 @@ export const hydrationSlice = createSlice({
             state.todayIntake = 0;
         },
 
+        dismissCelebration: (state) => {
+            state.showCelebration = false;
+        },
+
         resetHydration: () => initialState,
+    },
+    extraReducers: (builder) => {
+        builder.addCase('persist/REHYDRATE', (state, action: any) => {
+            if (action.payload && action.payload.hydration) {
+                return {
+                    ...state,
+                    ...action.payload.hydration,
+                    showCelebration: false,
+                };
+            }
+            return state;
+        });
     },
 });
 
@@ -104,6 +131,7 @@ export const {
     updateStreak,
     clearTodayLogs,
     resetHydration,
+    dismissCelebration,
 } = hydrationSlice.actions;
 
 export default hydrationSlice.reducer;

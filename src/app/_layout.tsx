@@ -7,12 +7,13 @@ import { useEffect } from "react";
 import { AppState, Linking, Animated, Easing, StyleSheet, View, Text } from "react-native";
 import { EventEmitter } from "expo-modules-core";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { addDrink, updateStreak } from "../store/slices/hydrationSlice";
+import { addDrink, updateStreak, dismissCelebration } from "../store/slices/hydrationSlice";
 import { updateWidgetData, getPendingLogs, clearPendingLogs, WaterWidgetModule } from "../../modules/water-widget";
 import * as SplashScreen from 'expo-splash-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef } from "react";
 import { ToastProvider } from "../components/Toast";
+import { CelebrationOverlay } from "../components/CelebrationOverlay";
 
 
 // Keep native splash screen visible until our custom layout mounts
@@ -22,6 +23,8 @@ function RootContainer() {
   const dispatch = useAppDispatch();
   const dailyGoal = useAppSelector((state) => state.settings.dailyGoal);
   const todayIntake = useAppSelector((state) => state.hydration.todayIntake);
+  const streak = useAppSelector((state) => state.hydration.streak);
+  const showCelebration = useAppSelector((state) => state.hydration.showCelebration);
 
   // Sync background-logged drinks from SharedPreferences queue
   const syncPendingLogs = async () => {
@@ -113,9 +116,18 @@ function RootContainer() {
   }, [dispatch, dailyGoal]);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-    </Stack>
+    <View style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+      {showCelebration && (
+        <CelebrationOverlay
+          streak={streak}
+          dailyGoal={dailyGoal}
+          onDismiss={() => dispatch(dismissCelebration())}
+        />
+      )}
+    </View>
   );
 }
 

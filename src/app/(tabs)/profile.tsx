@@ -14,6 +14,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { resetSettings, updateSettings } from '../../store/slices/settingsSlice';
+import { resetHydration } from '../../store/slices/hydrationSlice';
+
 
 export default function ProfileScreen() {
   const dispatch = useAppDispatch();
@@ -60,6 +62,7 @@ export default function ProfileScreen() {
 
   const handleReset = () => {
     dispatch(resetSettings());
+    dispatch(resetHydration());
   };
 
   // Recommended Hydration logic: 35ml per kg of body weight
