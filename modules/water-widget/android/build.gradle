@@ -3,11 +3,11 @@ plugins {
   id 'expo-module-gradle-plugin'
 }
 
-group = 'com.tusharatexpo.water'
+group = 'com.tusharatexpo.water.widget'
 version = '1.0.0'
 
 android {
-  namespace "com.tusharatexpo.water"
+  namespace "com.tusharatexpo.water.widget"
   defaultConfig {
     versionCode 1
     versionName '1.0.0'

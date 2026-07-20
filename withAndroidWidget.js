@@ -12,13 +12,13 @@ module.exports = function withAndroidWidget(config) {
     
     // Check if the widget provider receiver is already added
     const hasReceiver = mainApplication.receiver.some(
-      (r) => r.$['android:name'] === 'com.tusharatexpo.water.WaterWidgetProvider'
+      (r) => r.$['android:name'] === 'com.tusharatexpo.water.widget.WaterWidgetProvider'
     );
     
     if (!hasReceiver) {
       mainApplication.receiver.push({
         $: {
-          'android:name': 'com.tusharatexpo.water.WaterWidgetProvider',
+          'android:name': 'com.tusharatexpo.water.widget.WaterWidgetProvider',
           'android:label': 'Sip Habit Progress',
           'android:exported': 'true',
         },

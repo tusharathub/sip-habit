@@ -1,4 +1,4 @@
-package com.tusharatexpo.water
+package com.tusharatexpo.water.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName

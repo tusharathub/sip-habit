@@ -1,4 +1,4 @@
-package com.tusharatexpo.water
+package com.tusharatexpo.water.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

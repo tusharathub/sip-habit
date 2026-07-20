@@ -4,7 +4,7 @@
   ],
   "android": {
     "modules": [
-      "com.tusharatexpo.water.WaterWidgetModule"
+      "com.tusharatexpo.water.widget.WaterWidgetModule"
     ]
   }
 }
